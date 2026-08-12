@@ -69,7 +69,7 @@ async function processPdf(folder: string, file: File): Promise<{ pdf: ProjectFil
     const previewBuffer = await generatePdfPreviewPng(buffer);
     const { url } = await uploadBuffer({
       buffer: previewBuffer,
-      path: `${folder}/pdf-preview/${randomUUID()}.png`,
+      path: `${folder}/pdf-preview/${randomUUID()}`,
       contentType: "image/png",
     });
     previewUrl = url;
@@ -227,19 +227,19 @@ export async function updateProjectAction(
   let pdf = existing.pdf;
   let pdfPreviewUrl = existing.pdfPreviewUrl;
   if (isRealFile(pdfFile)) {
-    await deleteStoragePath(existing.pdf?.path);
+    await deleteStoragePath(existing.pdf?.path, "raw");
     const result = await processPdf(folder, pdfFile);
     pdf = result.pdf;
     pdfPreviewUrl = result.previewUrl;
   } else if (removePdf) {
-    await deleteStoragePath(existing.pdf?.path);
+    await deleteStoragePath(existing.pdf?.path, "raw");
     pdf = null;
     pdfPreviewUrl = null;
   }
 
   const additional = existing.additionalFiles.filter((f) => !removeFilePaths.includes(f.path));
   for (const path of removeFilePaths) {
-    await deleteStoragePath(path);
+    await deleteStoragePath(path, "raw");
   }
   for (const f of additionalFiles) {
     additional.push(await uploadGenericFile(f, `${folder}/files`));
@@ -281,8 +281,8 @@ export async function deleteProjectAction(id: string) {
   await Promise.all([
     deleteStoragePath(existing!.coverImage?.path),
     ...existing!.images.map((i) => deleteStoragePath(i.path)),
-    deleteStoragePath(existing!.pdf?.path),
-    ...existing!.additionalFiles.map((f) => deleteStoragePath(f.path)),
+    deleteStoragePath(existing!.pdf?.path, "raw"),
+    ...existing!.additionalFiles.map((f) => deleteStoragePath(f.path, "raw")),
   ]);
   await deleteProject(id);
 

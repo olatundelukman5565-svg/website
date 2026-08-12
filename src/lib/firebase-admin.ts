@@ -1,7 +1,6 @@
 import { cert, getApps, initializeApp, type App } from "firebase-admin/app";
 import { getAuth } from "firebase-admin/auth";
 import { getFirestore } from "firebase-admin/firestore";
-import { getStorage } from "firebase-admin/storage";
 
 function buildApp(): App {
   if (getApps().length) return getApps()[0];
@@ -10,10 +9,7 @@ function buildApp(): App {
   const usingEmulators = !!process.env.FIRESTORE_EMULATOR_HOST;
 
   if (usingEmulators) {
-    return initializeApp({
-      projectId: projectId || "demo-neovision",
-      storageBucket: process.env.FIREBASE_STORAGE_BUCKET || `${projectId || "demo-neovision"}.appspot.com`,
-    });
+    return initializeApp({ projectId: projectId || "demo-neovision" });
   }
 
   const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
@@ -27,7 +23,6 @@ function buildApp(): App {
 
   return initializeApp({
     credential: cert({ projectId, clientEmail, privateKey }),
-    storageBucket: process.env.FIREBASE_STORAGE_BUCKET || `${projectId}.appspot.com`,
   });
 }
 
@@ -35,5 +30,3 @@ const app = buildApp();
 
 export const adminAuth = getAuth(app);
 export const adminDb = getFirestore(app);
-export const adminStorage = getStorage(app);
-export const bucket = adminStorage.bucket();
