@@ -112,7 +112,6 @@ export const SEED_CATEGORIES: SeedCategory[] = [
     name: "City Permit / Permit Drawing Services",
     shortName: "Permit Drawings",
     order: 6,
-    parentSlug: "2d-architectural-design",
     description:
       "Permit-ready drawings and documentation prepared for city submission and approval.",
     intro:
