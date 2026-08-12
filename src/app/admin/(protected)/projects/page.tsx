@@ -62,6 +62,7 @@ export default async function AdminProjectsPage({
               <th className="px-4 py-3 font-medium">Status</th>
               <th className="px-4 py-3 font-medium">Featured</th>
               <th className="px-4 py-3 font-medium">Order</th>
+              <th className="px-4 py-3 font-medium">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-stone-100">
@@ -103,12 +104,20 @@ export default async function AdminProjectsPage({
                   <td className="px-4 py-3">
                     <MoveButtons id={p.id} />
                   </td>
+                  <td className="px-4 py-3">
+                    <Link
+                      href={`/admin/projects/${p.id}`}
+                      className="rounded-md border border-stone-300 px-3 py-1.5 text-xs font-medium text-stone-700 hover:border-amber-400 hover:text-amber-600"
+                    >
+                      Edit
+                    </Link>
+                  </td>
                 </tr>
               );
             })}
             {filtered.length === 0 && (
               <tr>
-                <td colSpan={5} className="px-4 py-8 text-center text-stone-400">
+                <td colSpan={6} className="px-4 py-8 text-center text-stone-400">
                   No projects yet.
                 </td>
               </tr>
