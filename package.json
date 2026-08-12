@@ -24,6 +24,9 @@
     "server-only": "^0.0.1",
     "slugify": "^1.6.9"
   },
+  "overrides": {
+    "jose": "^4.15.9"
+  },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
