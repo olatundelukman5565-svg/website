@@ -4,6 +4,7 @@ import { useActionState } from "react";
 import Image from "next/image";
 import type { Category, Project } from "@/types";
 import type { ProjectFormState } from "@/lib/actions/projects";
+import { FilePicker } from "@/components/admin/file-picker";
 
 type ProjectAction = (state: ProjectFormState, formData: FormData) => Promise<ProjectFormState>;
 
@@ -163,12 +164,9 @@ export function ProjectForm({
             />
           </div>
         )}
-        <input
-          type="file"
-          name="coverImage"
-          accept="image/jpeg,image/png,image/webp"
-          className="mt-3 block text-sm"
-        />
+        <div className="mt-3">
+          <FilePicker name="coverImage" accept="image/jpeg,image/png,image/webp" />
+        </div>
       </section>
 
       <section className="rounded-xl border border-stone-200 bg-white p-6">
@@ -195,13 +193,9 @@ export function ProjectForm({
             ))}
           </div>
         )}
-        <input
-          type="file"
-          name="images"
-          accept="image/jpeg,image/png,image/webp"
-          multiple
-          className="mt-3 block text-sm"
-        />
+        <div className="mt-3">
+          <FilePicker name="images" accept="image/jpeg,image/png,image/webp" multiple />
+        </div>
       </section>
 
       <section className="rounded-xl border border-stone-200 bg-white p-6">
@@ -236,7 +230,9 @@ export function ProjectForm({
             </div>
           </div>
         )}
-        <input type="file" name="pdf" accept="application/pdf" className="mt-3 block text-sm" />
+        <div className="mt-3">
+          <FilePicker name="pdf" accept="application/pdf" />
+        </div>
       </section>
 
       <section className="rounded-xl border border-stone-200 bg-white p-6">
@@ -257,7 +253,9 @@ export function ProjectForm({
             ))}
           </ul>
         )}
-        <input type="file" name="additionalFiles" multiple className="mt-3 block text-sm" />
+        <div className="mt-3">
+          <FilePicker name="additionalFiles" multiple />
+        </div>
       </section>
 
       {state.error && (

@@ -8,6 +8,7 @@ import {
   type SettingsFormState,
 } from "@/lib/actions/site-content";
 import type { AboutContent, ContactInfo, HomepageContent, Project } from "@/types";
+import { FilePicker } from "@/components/admin/file-picker";
 
 const initialState: SettingsFormState = {};
 const fieldClass =
@@ -63,7 +64,7 @@ export function HomepageSettingsForm({
         <label htmlFor="heroImage" className={labelClass}>
           Hero background image <span className="text-stone-400">(optional)</span>
         </label>
-        <input type="file" id="heroImage" name="heroImage" accept="image/jpeg,image/png,image/webp" className="block text-sm" />
+        <FilePicker id="heroImage" name="heroImage" accept="image/jpeg,image/png,image/webp" />
       </div>
       <div>
         <label htmlFor="aboutBlurb" className={labelClass}>
