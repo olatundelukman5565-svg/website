@@ -126,9 +126,10 @@ export function ChatInbox({ initialConversations }: { initialConversations: Chat
               </div>
               <p className="truncate text-xs text-stone-500">{c.buyerEmail}</p>
               <div className="flex items-center justify-between gap-2">
-                <p className="truncate text-xs text-stone-500">
+                <p className="flex min-w-0 items-center gap-1 truncate text-xs text-stone-500">
                   {c.lastSenderRole === "admin" && <span className="text-stone-400">You: </span>}
-                  {c.lastMessage || "—"}
+                  {c.lastMessageHasAttachments && <span aria-hidden>📎</span>}
+                  <span className="truncate">{c.lastMessage || "—"}</span>
                 </p>
                 {c.unreadByAdmin > 0 && (
                   <span className="shrink-0 rounded-full bg-amber-500 px-1.5 py-0.5 text-[10px] font-semibold text-stone-950">
@@ -136,6 +137,11 @@ export function ChatInbox({ initialConversations }: { initialConversations: Chat
                   </span>
                 )}
               </div>
+              {c.archived && (
+                <span className="mt-0.5 inline-flex w-fit rounded-full bg-stone-100 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-stone-500">
+                  Archived
+                </span>
+              )}
             </button>
           ))}
           {filtered.length === 0 && (
@@ -200,7 +206,17 @@ function ThreadView({
             ← Back
           </button>
           <div className="min-w-0">
-            <p className="truncate font-semibold text-stone-900">{conversation.buyerName}</p>
+            <div className="flex items-center gap-2">
+              <p className="truncate font-semibold text-stone-900">{conversation.buyerName}</p>
+              <span
+                className={clsx(
+                  "shrink-0 rounded-full px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide",
+                  conversation.archived ? "bg-stone-100 text-stone-500" : "bg-emerald-50 text-emerald-700"
+                )}
+              >
+                {conversation.archived ? "Archived" : "Active"}
+              </span>
+            </div>
             <p className="truncate text-xs text-stone-500">{conversation.buyerEmail}</p>
           </div>
         </div>

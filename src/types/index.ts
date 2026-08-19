@@ -131,6 +131,7 @@ export interface ChatConversation {
   lastMessage: string;
   lastMessageAt: string;
   lastSenderRole: ChatSenderRole;
+  lastMessageHasAttachments: boolean;
   unreadByAdmin: number;
   unreadByBuyer: number;
   archived: boolean;

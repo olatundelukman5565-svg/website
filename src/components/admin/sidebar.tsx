@@ -9,8 +9,8 @@ const LINKS = [
   { href: "/admin", label: "Dashboard", exact: true },
   { href: "/admin/categories", label: "Categories" },
   { href: "/admin/projects", label: "Projects" },
-  { href: "/admin/chat", label: "Live chat" },
-  { href: "/admin/messages", label: "Messages" },
+  { href: "/admin/chat", label: "Live Chat" },
+  { href: "/admin/messages", label: "Contact Messages" },
   { href: "/admin/settings", label: "Site content" },
 ];
 
