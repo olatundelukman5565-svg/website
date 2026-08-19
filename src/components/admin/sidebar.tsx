@@ -9,11 +9,18 @@ const LINKS = [
   { href: "/admin", label: "Dashboard", exact: true },
   { href: "/admin/categories", label: "Categories" },
   { href: "/admin/projects", label: "Projects" },
+  { href: "/admin/chat", label: "Live chat" },
   { href: "/admin/messages", label: "Messages" },
   { href: "/admin/settings", label: "Site content" },
 ];
 
-export function AdminSidebar({ unreadCount }: { unreadCount: number }) {
+export function AdminSidebar({
+  unreadCount,
+  unreadChatCount,
+}: {
+  unreadCount: number;
+  unreadChatCount: number;
+}) {
   const pathname = usePathname();
 
   return (
@@ -40,6 +47,11 @@ export function AdminSidebar({ unreadCount }: { unreadCount: number }) {
               {link.href === "/admin/messages" && unreadCount > 0 && (
                 <span className="rounded-full bg-amber-500 px-1.5 py-0.5 text-xs font-semibold text-stone-950">
                   {unreadCount}
+                </span>
+              )}
+              {link.href === "/admin/chat" && unreadChatCount > 0 && (
+                <span className="rounded-full bg-amber-500 px-1.5 py-0.5 text-xs font-semibold text-stone-950">
+                  {unreadChatCount}
                 </span>
               )}
             </Link>

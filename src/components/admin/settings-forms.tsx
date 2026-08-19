@@ -3,11 +3,12 @@
 import { useActionState } from "react";
 import {
   updateAboutAction,
+  updateCommunicationAction,
   updateContactAction,
   updateHomepageAction,
   type SettingsFormState,
 } from "@/lib/actions/site-content";
-import type { AboutContent, ContactInfo, HomepageContent, Project } from "@/types";
+import type { AboutContent, CommunicationSettings, ContactInfo, HomepageContent, Project } from "@/types";
 import { FilePicker } from "@/components/admin/file-picker";
 
 const initialState: SettingsFormState = {};
@@ -216,6 +217,81 @@ export function ContactSettingsForm({ content }: { content: ContactInfo }) {
         className="rounded-md bg-stone-900 px-5 py-2.5 font-medium text-white hover:bg-stone-700 disabled:opacity-60"
       >
         {pending ? "Saving…" : "Save contact info"}
+      </button>
+    </form>
+  );
+}
+
+export function CommunicationSettingsForm({ content }: { content: CommunicationSettings }) {
+  const [state, formAction, pending] = useActionState(updateCommunicationAction, initialState);
+
+  return (
+    <form action={formAction} className="space-y-5">
+      <div>
+        <label htmlFor="whatsappNumber" className={labelClass}>
+          WhatsApp number <span className="text-stone-400">(with country code, e.g. +1 555 010 2030)</span>
+        </label>
+        <input
+          id="whatsappNumber"
+          name="whatsappNumber"
+          defaultValue={content.whatsappNumber}
+          placeholder="+1 555 010 2030"
+          className={fieldClass}
+        />
+        <p className="mt-1 text-xs text-stone-400">
+          Leave blank to hide the WhatsApp option on the site.
+        </p>
+      </div>
+
+      <div>
+        <label htmlFor="welcomeMessage" className={labelClass}>
+          Chat welcome message
+        </label>
+        <textarea
+          id="welcomeMessage"
+          name="welcomeMessage"
+          defaultValue={content.welcomeMessage}
+          rows={3}
+          className={fieldClass}
+        />
+        <p className="mt-1 text-xs text-stone-400">
+          Sent automatically the moment a new visitor starts a chat.
+        </p>
+      </div>
+
+      <div className="flex items-center gap-2">
+        <input
+          id="chatEnabled"
+          name="chatEnabled"
+          type="checkbox"
+          defaultChecked={content.chatEnabled}
+          className="h-4 w-4 rounded border-stone-300 text-amber-500 focus:ring-amber-500"
+        />
+        <label htmlFor="chatEnabled" className="text-sm font-medium text-stone-700">
+          Chat is available to visitors
+        </label>
+      </div>
+
+      <div className="flex items-center gap-2">
+        <input
+          id="popupEnabled"
+          name="popupEnabled"
+          type="checkbox"
+          defaultChecked={content.popupEnabled}
+          className="h-4 w-4 rounded border-stone-300 text-amber-500 focus:ring-amber-500"
+        />
+        <label htmlFor="popupEnabled" className="text-sm font-medium text-stone-700">
+          Show the floating &quot;Contact Me&quot; button across the website
+        </label>
+      </div>
+
+      <StatusBanner state={state} />
+      <button
+        type="submit"
+        disabled={pending}
+        className="rounded-md bg-stone-900 px-5 py-2.5 font-medium text-white hover:bg-stone-700 disabled:opacity-60"
+      >
+        {pending ? "Saving…" : "Save communication settings"}
       </button>
     </form>
   );

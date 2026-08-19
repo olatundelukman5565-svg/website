@@ -1,7 +1,8 @@
 import { randomUUID } from "crypto";
 import type { UploadApiOptions, UploadApiResponse } from "cloudinary";
 import { getCloudinary } from "@/lib/cloudinary";
-import type { ProjectFile, ProjectImage } from "@/types";
+import { chatAttachmentKind } from "@/lib/validation";
+import type { ChatAttachment, ProjectFile, ProjectImage } from "@/types";
 
 function uploadToCloudinary(buffer: Buffer, options: UploadApiOptions): Promise<UploadApiResponse> {
   const cloudinary = getCloudinary();
@@ -58,9 +59,29 @@ export async function uploadGenericFile(file: File, folder: string): Promise<Pro
   return { url: result.secure_url, path: result.public_id, name: file.name, size: file.size };
 }
 
+export async function uploadChatAttachment(file: File, folder: string): Promise<ChatAttachment> {
+  const buffer = Buffer.from(await file.arrayBuffer());
+  const kind = chatAttachmentKind(file.type);
+  const resourceType = kind === "image" ? "image" : kind === "video" ? "video" : "raw";
+  const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+  const result = await uploadToCloudinary(buffer, {
+    public_id: `${folder}/${randomUUID()}-${safeName}`,
+    resource_type: resourceType,
+  });
+  return {
+    url: resourceType === "image" ? withAutoOptimization(result.secure_url) : result.secure_url,
+    path: result.public_id,
+    name: file.name,
+    size: file.size,
+    contentType: file.type,
+    kind,
+    resourceType,
+  };
+}
+
 export async function deleteStoragePath(
   path: string | null | undefined,
-  resourceType: "image" | "raw" = "image"
+  resourceType: "image" | "video" | "raw" = "image"
 ) {
   if (!path) return;
   try {

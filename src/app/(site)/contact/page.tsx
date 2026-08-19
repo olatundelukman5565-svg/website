@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { listCategories } from "@/lib/data/categories";
 import { getSiteContent } from "@/lib/data/site-content";
 import { ContactForm } from "@/components/site/contact-form";
+import { buildWhatsappUrl } from "@/lib/whatsapp";
 
 export const dynamic = "force-dynamic";
 
@@ -12,8 +13,11 @@ export const metadata: Metadata = {
 
 export default async function ContactPage() {
   const [categories, content] = await Promise.all([listCategories(), getSiteContent()]);
-  const { contact } = content;
+  const { contact, communication } = content;
   const topLevel = categories.filter((c) => !c.parentId);
+  const whatsappUrl = communication.whatsappNumber
+    ? buildWhatsappUrl(communication.whatsappNumber, "Hi Neo Vision Team, I'd like to talk about a project.")
+    : null;
 
   return (
     <div>
@@ -34,6 +38,31 @@ export default async function ContactPage() {
             <ContactForm categories={topLevel} />
           </div>
           <aside className="space-y-8">
+            {(whatsappUrl || communication.chatEnabled) && (
+              <div className="rounded-2xl border border-stone-200 p-6">
+                <h2 className="font-display text-lg font-semibold text-stone-900">Prefer to chat?</h2>
+                <p className="mt-1 text-sm text-stone-500">
+                  Reach us instantly instead of waiting on an email reply.
+                </p>
+                <div className="mt-4 flex flex-col gap-2.5">
+                  {communication.chatEnabled && (
+                    <p className="rounded-full border border-stone-200 px-5 py-2.5 text-center text-sm font-medium text-stone-600">
+                      💬 Use the chat button in the corner of your screen
+                    </p>
+                  )}
+                  {whatsappUrl && (
+                    <a
+                      href={whatsappUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-center gap-2 rounded-full bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-500"
+                    >
+                      🟢 Chat on WhatsApp
+                    </a>
+                  )}
+                </div>
+              </div>
+            )}
             <div className="rounded-2xl border border-stone-200 p-6">
               <h2 className="font-display text-lg font-semibold text-stone-900">Contact information</h2>
               <dl className="mt-4 space-y-3 text-sm text-stone-600">

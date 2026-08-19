@@ -27,3 +27,38 @@ export function validatePdfFile(file: File): string | null {
   }
   return null;
 }
+
+export const ALLOWED_VIDEO_TYPES = ["video/mp4", "video/quicktime", "video/webm"];
+export const ALLOWED_CHAT_DOC_TYPES = [
+  "application/msword",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  "application/vnd.ms-excel",
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  "application/zip",
+  "application/x-zip-compressed",
+];
+export const MAX_CHAT_ATTACHMENT_SIZE = 20 * 1024 * 1024; // 20MB per file
+export const MAX_CHAT_ATTACHMENTS_PER_MESSAGE = 5;
+export const MAX_CHAT_MESSAGE_LENGTH = 4000;
+
+export function chatAttachmentKind(contentType: string): "image" | "pdf" | "video" | "file" {
+  if (ALLOWED_IMAGE_TYPES.includes(contentType)) return "image";
+  if (contentType === ALLOWED_PDF_TYPE) return "pdf";
+  if (ALLOWED_VIDEO_TYPES.includes(contentType)) return "video";
+  return "file";
+}
+
+export function validateChatAttachment(file: File): string | null {
+  const isAllowed =
+    ALLOWED_IMAGE_TYPES.includes(file.type) ||
+    file.type === ALLOWED_PDF_TYPE ||
+    ALLOWED_VIDEO_TYPES.includes(file.type) ||
+    ALLOWED_CHAT_DOC_TYPES.includes(file.type);
+  if (!isAllowed) {
+    return `${file.name}: file type not supported. Please send images, PDFs, videos, Word/Excel docs, or ZIP files.`;
+  }
+  if (file.size > MAX_CHAT_ATTACHMENT_SIZE) {
+    return `${file.name}: exceeds the 20MB per-file limit.`;
+  }
+  return null;
+}
