@@ -4,10 +4,12 @@ import type { Project } from "@/types";
 
 export function ProjectCard({
   project,
+  href,
   categoryName,
   priority = false,
 }: {
   project: Project;
+  href: string;
   categoryName?: string;
   priority?: boolean;
 }) {
@@ -15,7 +17,7 @@ export function ProjectCard({
 
   return (
     <Link
-      href={`/portfolio/${project.categorySlug}/${project.slug}`}
+      href={href}
       className="group block overflow-hidden rounded-2xl border border-stone-200 bg-white transition hover:-translate-y-1 hover:shadow-xl"
     >
       <div className="relative aspect-[4/3] overflow-hidden bg-stone-100">

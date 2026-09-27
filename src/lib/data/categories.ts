@@ -16,10 +16,27 @@ function toCategory(id: string, data: FirebaseFirestore.DocumentData): Category 
     capabilities: data.capabilities ?? [],
     parentId: data.parentId ?? null,
     order: data.order ?? 0,
+    enabled: data.enabled ?? true,
     coverImageUrl: data.coverImageUrl ?? null,
     createdAt: data.createdAt?.toDate?.().toISOString?.() ?? new Date().toISOString(),
     updatedAt: data.updatedAt?.toDate?.().toISOString?.() ?? new Date().toISOString(),
   };
+}
+
+/**
+ * Slug collisions are only checked among siblings (same parentId), not globally.
+ * This lets e.g. "architecture" exist once under the 2D pillar and once under
+ * 3D Model without colliding — each subcategory route is resolved by
+ * (parent slug, own slug) together, never by a bare global slug lookup.
+ */
+async function siblingSlugExists(slug: string, parentId: string | null | undefined) {
+  const snap = await adminDb
+    .collection(COLLECTION)
+    .where("parentId", "==", parentId ?? null)
+    .where("slug", "==", slug)
+    .limit(1)
+    .get();
+  return !snap.empty;
 }
 
 export async function listCategories(): Promise<Category[]> {
@@ -27,11 +44,24 @@ export async function listCategories(): Promise<Category[]> {
   return snap.docs.map((d) => toCategory(d.id, d.data()));
 }
 
+/** Resolves a category by slug. Only safe for top-level (parentId === null) slugs, which stay globally unique. */
 export async function getCategoryBySlug(slug: string): Promise<Category | null> {
   const snap = await adminDb.collection(COLLECTION).where("slug", "==", slug).limit(1).get();
   if (snap.empty) return null;
   const doc = snap.docs[0];
   return toCategory(doc.id, doc.data());
+}
+
+/** Resolves a subcategory scoped to its parent, so duplicate slugs across different parents never collide. */
+export async function getChildCategoryBySlug(parentId: string, slug: string): Promise<Category | null> {
+  const snap = await adminDb
+    .collection(COLLECTION)
+    .where("parentId", "==", parentId)
+    .where("slug", "==", slug)
+    .limit(1)
+    .get();
+  if (snap.empty) return null;
+  return toCategory(snap.docs[0].id, snap.docs[0].data());
 }
 
 export async function getCategoryById(id: string): Promise<Category | null> {
@@ -48,19 +78,20 @@ export interface CategoryInput {
   capabilities: string[];
   parentId?: string | null;
   order: number;
+  enabled?: boolean;
   coverImageUrl?: string | null;
   slug?: string;
 }
 
 export async function createCategory(input: CategoryInput): Promise<string> {
-  const slug = await ensureUniqueSlug(input.slug || input.name, async (candidate) => {
-    const existing = await getCategoryBySlug(candidate);
-    return !!existing;
-  });
+  const slug = await ensureUniqueSlug(input.slug || input.name, (candidate) =>
+    siblingSlugExists(candidate, input.parentId)
+  );
   const now = FieldValue.serverTimestamp();
   const ref = await adminDb.collection(COLLECTION).add({
     ...input,
     slug,
+    enabled: input.enabled ?? true,
     createdAt: now,
     updatedAt: now,
   });
@@ -72,10 +103,10 @@ export async function updateCategory(id: string, input: Partial<CategoryInput>):
   if (input.name && !input.slug) {
     const current = await getCategoryById(id);
     if (current && toSlug(input.name) !== current.slug) {
+      const parentId = input.parentId !== undefined ? input.parentId : current.parentId;
       updates.slug = await ensureUniqueSlug(input.name, async (candidate) => {
         if (candidate === current.slug) return false;
-        const existing = await getCategoryBySlug(candidate);
-        return !!existing;
+        return siblingSlugExists(candidate, parentId);
       });
     }
   }

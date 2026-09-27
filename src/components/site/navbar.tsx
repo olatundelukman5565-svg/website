@@ -6,11 +6,117 @@ import { usePathname } from "next/navigation";
 import clsx from "clsx";
 import type { Category } from "@/types";
 
+function DivisionDropdown({
+  label,
+  slug,
+  subcategories,
+  pathname,
+}: {
+  label: string;
+  slug: string;
+  subcategories: Category[];
+  pathname: string;
+}) {
+  const [open, setOpen] = useState(false);
+  const href = `/${slug}`;
+
+  return (
+    <div className="relative" onMouseEnter={() => setOpen(true)} onMouseLeave={() => setOpen(false)}>
+      <Link
+        href={href}
+        className={clsx(
+          "text-sm font-medium transition-colors hover:text-amber-600",
+          pathname.startsWith(href) ? "text-amber-600" : "text-stone-700"
+        )}
+      >
+        {label}
+      </Link>
+      {open && subcategories.length > 0 && (
+        <div className="absolute left-1/2 top-full w-72 -translate-x-1/2 pt-3">
+          <div className="rounded-xl border border-stone-200 bg-white p-2 shadow-lg">
+            {subcategories.map((sc) => (
+              <Link
+                key={sc.id}
+                href={`${href}/${sc.slug}`}
+                className="block rounded-lg px-3 py-2 text-sm text-stone-700 hover:bg-stone-50 hover:text-amber-600"
+              >
+                {sc.shortName || sc.name}
+              </Link>
+            ))}
+            <Link
+              href={href}
+              className="mt-1 block rounded-lg border-t border-stone-100 px-3 py-2 text-sm font-medium text-amber-600 hover:bg-stone-50"
+            >
+              View all {label} work →
+            </Link>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function MobileAccordionSection({
+  label,
+  slug,
+  subcategories,
+  onNavigate,
+}: {
+  label: string;
+  slug: string;
+  subcategories: Category[];
+  onNavigate: () => void;
+}) {
+  const [expanded, setExpanded] = useState(false);
+  const href = `/${slug}`;
+
+  return (
+    <div>
+      <div className="flex items-center justify-between">
+        <Link
+          href={href}
+          className="flex-1 rounded-md px-2 py-2.5 text-sm font-medium text-stone-700"
+          onClick={onNavigate}
+        >
+          {label}
+        </Link>
+        {subcategories.length > 0 && (
+          <button
+            type="button"
+            onClick={() => setExpanded((v) => !v)}
+            aria-label={`Toggle ${label} subcategories`}
+            className="flex h-8 w-8 items-center justify-center text-stone-400"
+          >
+            {expanded ? "−" : "+"}
+          </button>
+        )}
+      </div>
+      {expanded && (
+        <div className="ml-3 flex flex-col gap-1 border-l border-stone-200 pl-3">
+          {subcategories.map((sc) => (
+            <Link
+              key={sc.id}
+              href={`${href}/${sc.slug}`}
+              className="rounded-md px-2 py-2 text-sm text-stone-500"
+              onClick={onNavigate}
+            >
+              {sc.shortName || sc.name}
+            </Link>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function Navbar({ categories }: { categories: Category[] }) {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [portfolioOpen, setPortfolioOpen] = useState(false);
   const pathname = usePathname();
-  const topLevel = categories.filter((c) => !c.parentId);
+
+  const twoD = categories.find((c) => c.slug === "2d" && !c.parentId && c.enabled);
+  const threeDModel = categories.find((c) => c.slug === "3d-model" && !c.parentId && c.enabled);
+  const twoDSubs = twoD ? categories.filter((c) => c.parentId === twoD.id && c.enabled) : [];
+  const threeDSubs = threeDModel ? categories.filter((c) => c.parentId === threeDModel.id && c.enabled) : [];
 
   const navLink = (href: string, label: string) => (
     <Link
@@ -38,45 +144,19 @@ export function Navbar({ categories }: { categories: Category[] }) {
 
         <nav className="hidden items-center gap-8 md:flex">
           {navLink("/", "Home")}
+          {twoD && (
+            <DivisionDropdown label="2D" slug="2d" subcategories={twoDSubs} pathname={pathname} />
+          )}
+          {threeDModel && (
+            <DivisionDropdown
+              label="3D Model"
+              slug="3d-model"
+              subcategories={threeDSubs}
+              pathname={pathname}
+            />
+          )}
+          {navLink("/portfolio", "Portfolio")}
           {navLink("/about", "About")}
-
-          <div
-            className="relative"
-            onMouseEnter={() => setPortfolioOpen(true)}
-            onMouseLeave={() => setPortfolioOpen(false)}
-          >
-            <Link
-              href="/portfolio"
-              className={clsx(
-                "text-sm font-medium transition-colors hover:text-amber-600",
-                pathname.startsWith("/portfolio") ? "text-amber-600" : "text-stone-700"
-              )}
-            >
-              Portfolio
-            </Link>
-            {portfolioOpen && topLevel.length > 0 && (
-              <div className="absolute left-1/2 top-full w-72 -translate-x-1/2 pt-3">
-                <div className="rounded-xl border border-stone-200 bg-white p-2 shadow-lg">
-                  {topLevel.map((c) => (
-                    <Link
-                      key={c.id}
-                      href={`/portfolio/${c.slug}`}
-                      className="block rounded-lg px-3 py-2 text-sm text-stone-700 hover:bg-stone-50 hover:text-amber-600"
-                    >
-                      {c.shortName || c.name}
-                    </Link>
-                  ))}
-                  <Link
-                    href="/portfolio"
-                    className="mt-1 block rounded-lg border-t border-stone-100 px-3 py-2 text-sm font-medium text-amber-600 hover:bg-stone-50"
-                  >
-                    View all categories →
-                  </Link>
-                </div>
-              </div>
-            )}
-          </div>
-
           {navLink("/live-chat", "Live Chat")}
           {navLink("/contact", "Contact")}
         </nav>
@@ -111,29 +191,33 @@ export function Navbar({ categories }: { categories: Category[] }) {
             <Link href="/" className="rounded-md px-2 py-2.5 text-sm font-medium text-stone-700" onClick={() => setMobileOpen(false)}>
               Home
             </Link>
-            <Link href="/about" className="rounded-md px-2 py-2.5 text-sm font-medium text-stone-700" onClick={() => setMobileOpen(false)}>
-              About
-            </Link>
+            {twoD && (
+              <MobileAccordionSection
+                label="2D"
+                slug="2d"
+                subcategories={twoDSubs}
+                onNavigate={() => setMobileOpen(false)}
+              />
+            )}
+            {threeDModel && (
+              <MobileAccordionSection
+                label="3D Model"
+                slug="3d-model"
+                subcategories={threeDSubs}
+                onNavigate={() => setMobileOpen(false)}
+              />
+            )}
             <Link href="/portfolio" className="rounded-md px-2 py-2.5 text-sm font-medium text-stone-700" onClick={() => setMobileOpen(false)}>
               Portfolio
             </Link>
-            <div className="ml-3 flex flex-col gap-1 border-l border-stone-200 pl-3">
-              {topLevel.map((c) => (
-                <Link
-                  key={c.id}
-                  href={`/portfolio/${c.slug}`}
-                  className="rounded-md px-2 py-2 text-sm text-stone-500"
-                  onClick={() => setMobileOpen(false)}
-                >
-                  {c.shortName || c.name}
-                </Link>
-              ))}
-            </div>
-            <Link href="/live-chat" className="rounded-md px-2 py-2.5 text-sm font-medium text-stone-700" onClick={() => setMobileOpen(false)}>
-              Live Chat
+            <Link href="/about" className="rounded-md px-2 py-2.5 text-sm font-medium text-stone-700" onClick={() => setMobileOpen(false)}>
+              About
             </Link>
             <Link href="/contact" className="rounded-md px-2 py-2.5 text-sm font-medium text-stone-700" onClick={() => setMobileOpen(false)}>
               Contact
+            </Link>
+            <Link href="/live-chat" className="rounded-md px-2 py-2.5 text-sm font-medium text-stone-700" onClick={() => setMobileOpen(false)}>
+              Live Chat
             </Link>
             <Link
               href="/contact"

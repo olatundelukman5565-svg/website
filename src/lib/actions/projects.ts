@@ -298,7 +298,7 @@ export async function moveProjectAction(id: string, direction: "up" | "down") {
   if (!project) return;
 
   const { listProjectsByCategory } = await import("@/lib/data/projects");
-  const siblings = await listProjectsByCategory(project.categorySlug);
+  const siblings = await listProjectsByCategory(project.categoryId);
   const index = siblings.findIndex((p) => p.id === id);
   const swapIndex = direction === "up" ? index - 1 : index + 1;
   if (swapIndex < 0 || swapIndex >= siblings.length) return;

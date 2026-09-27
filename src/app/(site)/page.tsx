@@ -3,6 +3,7 @@ import Image from "next/image";
 import { listCategories } from "@/lib/data/categories";
 import { listPublishedProjectsByIds, listFeaturedProjects } from "@/lib/data/projects";
 import { getSiteContent } from "@/lib/data/site-content";
+import { projectHref } from "@/lib/portfolio-paths";
 
 export const dynamic = "force-dynamic";
 import { ProjectCard } from "@/components/site/project-card";
@@ -14,8 +15,17 @@ export default async function HomePage() {
   const featured =
     configuredFeatured.length > 0 ? configuredFeatured : await listFeaturedProjects(6);
 
-  const topLevel = categories.filter((c) => !c.parentId);
-  const categoryBySlug = Object.fromEntries(categories.map((c) => [c.slug, c]));
+  const twoD = categories.find((c) => c.slug === "2d" && !c.parentId && c.enabled);
+  const threeDModel = categories.find((c) => c.slug === "3d-model" && !c.parentId && c.enabled);
+  const twoDSubs = twoD
+    ? categories.filter((c) => c.parentId === twoD.id && c.enabled).sort((a, b) => a.order - b.order)
+    : [];
+  const threeDSubs = threeDModel
+    ? categories
+        .filter((c) => c.parentId === threeDModel.id && c.enabled)
+        .sort((a, b) => a.order - b.order)
+    : [];
+  const categoriesById = Object.fromEntries(categories.map((c) => [c.id, c]));
 
   return (
     <div>
@@ -60,37 +70,73 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Featured services */}
-      <section className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
-        <div className="max-w-2xl">
-          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-amber-600">What we do</p>
-          <h2 className="mt-3 font-display text-3xl font-semibold text-stone-900 sm:text-4xl">
-            Services built for architecture &amp; 3D
-          </h2>
-          <p className="mt-4 text-stone-500">
-            From construction-ready 2D drawings to fully realized 3D worlds, Neo Vision Team delivers
-            technical precision and visual craft across every discipline.
-          </p>
-        </div>
-
-        <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {topLevel.map((c) => (
-            <Link
-              key={c.id}
-              href={`/portfolio/${c.slug}`}
-              className="group rounded-2xl border border-stone-200 p-7 transition hover:border-amber-400 hover:shadow-lg"
-            >
-              <h3 className="font-display text-xl font-semibold text-stone-900 group-hover:text-amber-600">
-                {c.name}
-              </h3>
-              <p className="mt-2 text-sm leading-relaxed text-stone-500">{c.description}</p>
-              <span className="mt-4 inline-block text-sm font-medium text-amber-600">
-                Explore work →
-              </span>
+      {/* 2D division */}
+      {twoD && (
+        <section className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
+          <div className="flex flex-wrap items-end justify-between gap-4">
+            <div className="max-w-2xl">
+              <p className="text-xs font-semibold uppercase tracking-[0.3em] text-amber-600">Primary division</p>
+              <h2 className="mt-3 font-display text-3xl font-semibold text-stone-900 sm:text-4xl">2D</h2>
+              <p className="mt-4 text-stone-500">{twoD.intro}</p>
+            </div>
+            <Link href="/2d" className="text-sm font-medium text-stone-700 hover:text-amber-600">
+              View all 2D work →
             </Link>
-          ))}
-        </div>
-      </section>
+          </div>
+
+          <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {twoDSubs.map((c) => (
+              <Link
+                key={c.id}
+                href={`/2d/${c.slug}`}
+                className="group rounded-2xl border border-stone-200 p-7 transition hover:border-amber-400 hover:shadow-lg"
+              >
+                <h3 className="font-display text-xl font-semibold text-stone-900 group-hover:text-amber-600">
+                  {c.name}
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-stone-500">{c.description}</p>
+                <span className="mt-4 inline-block text-sm font-medium text-amber-600">Explore →</span>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* 3D Model division */}
+      {threeDModel && (
+        <section className="bg-stone-950 py-24 text-white">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="flex flex-wrap items-end justify-between gap-4">
+              <div className="max-w-2xl">
+                <p className="text-xs font-semibold uppercase tracking-[0.3em] text-emerald-400">
+                  Primary division
+                </p>
+                <h2 className="mt-3 font-display text-3xl font-semibold sm:text-4xl">3D Model</h2>
+                <p className="mt-4 text-stone-300">{threeDModel.intro}</p>
+              </div>
+              <Link href="/3d-model" className="text-sm font-medium text-stone-300 hover:text-emerald-400">
+                View all 3D work →
+              </Link>
+            </div>
+
+            <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {threeDSubs.map((c) => (
+                <Link
+                  key={c.id}
+                  href={`/3d-model/${c.slug}`}
+                  className="group rounded-2xl border border-stone-800 p-7 transition hover:border-emerald-400"
+                >
+                  <h3 className="font-display text-xl font-semibold text-white group-hover:text-emerald-400">
+                    {c.name}
+                  </h3>
+                  <p className="mt-2 text-sm leading-relaxed text-stone-400">{c.description}</p>
+                  <span className="mt-4 inline-block text-sm font-medium text-emerald-400">Explore →</span>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Featured projects */}
       {featured.length > 0 && (
@@ -112,7 +158,8 @@ export default async function HomePage() {
                 <ProjectCard
                   key={p.id}
                   project={p}
-                  categoryName={categoryBySlug[p.categorySlug]?.shortName}
+                  href={projectHref(p, categories)}
+                  categoryName={categoriesById[p.categoryId]?.shortName}
                   priority={i < 3}
                 />
               ))}
@@ -121,39 +168,6 @@ export default async function HomePage() {
         </section>
       )}
 
-      {/* 2D / 3D split */}
-      <section className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
-        <div className="grid gap-6 lg:grid-cols-2">
-          <div className="rounded-2xl bg-stone-950 p-10 text-white">
-            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-amber-500">Core focus</p>
-            <h3 className="mt-3 font-display text-2xl font-semibold">2D Architecture</h3>
-            <p className="mt-4 leading-relaxed text-stone-300">
-              Construction-accurate floor plans, elevations, sections, and full technical drawing sets —
-              including permit-ready documentation prepared for city submission.
-            </p>
-            <Link
-              href="/portfolio/2d-architectural-design"
-              className="mt-6 inline-block text-sm font-semibold text-amber-400 hover:text-amber-300"
-            >
-              View 2D Architecture →
-            </Link>
-          </div>
-          <div className="rounded-2xl bg-amber-500 p-10 text-stone-950">
-            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-stone-800">Visualize the vision</p>
-            <h3 className="mt-3 font-display text-2xl font-semibold">3D Architecture &amp; Modeling</h3>
-            <p className="mt-4 leading-relaxed text-stone-900/80">
-              Photoreal architectural visualization, walkthroughs, and a full range of 3D modeling —
-              characters, environments, props, and objects.
-            </p>
-            <Link
-              href="/portfolio/3d-architectural-visualization"
-              className="mt-6 inline-block text-sm font-semibold text-stone-950 hover:text-stone-700"
-            >
-              View 3D Work →
-            </Link>
-          </div>
-        </div>
-      </section>
 
       {/* About blurb */}
       <section className="bg-stone-100 py-24">

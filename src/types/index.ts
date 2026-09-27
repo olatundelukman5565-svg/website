@@ -24,6 +24,7 @@ export interface Category {
   capabilities: string[];
   parentId?: string | null;
   order: number;
+  enabled: boolean;
   coverImageUrl?: string | null;
   createdAt: string;
   updatedAt: string;
