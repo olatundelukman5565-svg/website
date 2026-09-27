@@ -13,7 +13,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { subcategory, project: projectSlug } = await params;
   const categories = await listCategories();
-  const division = categories.find((c) => c.slug === "3d-model" && !c.parentId);
+  const division = categories.find((c) => c.slug === "2d-design" && !c.parentId);
   if (!division) return {};
   const category = categories.find((c) => c.parentId === division.id && c.slug === subcategory);
   if (!category) return {};
@@ -22,14 +22,14 @@ export async function generateMetadata({
   return { title: project.title, description: project.description.slice(0, 160) };
 }
 
-export default async function ThreeDModelProjectPage({
+export default async function TwoDProjectPage({
   params,
 }: {
   params: Promise<{ subcategory: string; project: string }>;
 }) {
   const { subcategory, project: projectSlug } = await params;
   const categories = await listCategories();
-  const division = categories.find((c) => c.slug === "3d-model" && !c.parentId);
+  const division = categories.find((c) => c.slug === "2d-design" && !c.parentId);
   if (!division) notFound();
 
   const category = await getChildCategoryBySlug(division.id, subcategory);
@@ -46,7 +46,7 @@ export default async function ThreeDModelProjectPage({
       category={category}
       related={related}
       allCategories={categories}
-      breadcrumbBase={[{ label: division.name, href: "/3d-model" }]}
+      breadcrumbBase={[{ label: division.name, href: "/2d-design" }]}
     />
   );
 }

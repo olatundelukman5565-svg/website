@@ -2,9 +2,10 @@ export const SITE_NAME = "Neo Vision Team";
 
 export const NAV_LINKS = [
   { label: "Home", href: "/" },
-  { label: "2D", href: "/2d" },
-  { label: "3D Model", href: "/3d-model" },
+  { label: "2D Design", href: "/2d-design" },
+  { label: "3D Design", href: "/3d-design" },
   { label: "Portfolio", href: "/portfolio" },
+  { label: "Live Chat", href: "/live-chat" },
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
 ] as const;
@@ -23,30 +24,30 @@ export interface SeedCategory {
 export const SEED_CATEGORIES: SeedCategory[] = [
   // ---- Primary pillars ----
   {
-    slug: "2d",
-    name: "2D",
-    shortName: "2D",
+    slug: "2d-design",
+    name: "2D Design",
+    shortName: "2D Design",
     order: 1,
-    description: "Design, drawing, documentation, and 2D artwork.",
+    description: "Architecture, technical, and character work in 2D.",
     intro:
-      "Our 2D division covers every discipline that starts and ends on the page — from construction-ready architectural drawings and permit documentation, to technical and patent-style illustration, to original 2D character art.",
+      "Our 2D Design division brings together three disciplines: architectural drawing and permit documentation, technical and patent-style illustration, and original 2D character art.",
     capabilities: [],
   },
   {
-    slug: "3d-model",
-    name: "3D Model",
-    shortName: "3D Model",
+    slug: "3d-design",
+    name: "3D Design",
+    shortName: "3D Design",
     order: 2,
-    description: "3D modeling, visualization, sculpture, printing, and 3D characters.",
+    description: "Architecture, sculpture, printing, and character work in 3D.",
     intro:
-      "Our 3D Model division spans architectural visualization, physical sculpture and 3D printing, and full character production — built to the same technical standard as our 2D work.",
+      "Our 3D Design division brings together three disciplines: architectural visualization, digital sculpture and 3D printing, and full character production — built to the same technical standard as our 2D work.",
     capabilities: [],
   },
 
   // ---- 2D subcategories ----
   {
     slug: "architecture",
-    parentSlug: "2d",
+    parentSlug: "2d-design",
     name: "2D Architecture",
     shortName: "Architecture",
     order: 1,
@@ -74,7 +75,7 @@ export const SEED_CATEGORIES: SeedCategory[] = [
   },
   {
     slug: "technical-drawing",
-    parentSlug: "2d",
+    parentSlug: "2d-design",
     name: "Technical Drawing",
     shortName: "Technical Drawing",
     order: 2,
@@ -99,7 +100,7 @@ export const SEED_CATEGORIES: SeedCategory[] = [
   },
   {
     slug: "character-art",
-    parentSlug: "2d",
+    parentSlug: "2d-design",
     name: "2D Character Art",
     shortName: "Character Art",
     order: 3,
@@ -123,7 +124,7 @@ export const SEED_CATEGORIES: SeedCategory[] = [
   // ---- 3D Model subcategories ----
   {
     slug: "architecture",
-    parentSlug: "3d-model",
+    parentSlug: "3d-design",
     name: "3D Architecture",
     shortName: "Architecture",
     order: 1,
@@ -147,7 +148,7 @@ export const SEED_CATEGORIES: SeedCategory[] = [
   },
   {
     slug: "printing-sculpture",
-    parentSlug: "3d-model",
+    parentSlug: "3d-design",
     name: "3D Printing & Sculpture",
     shortName: "Printing & Sculpture",
     order: 2,
@@ -171,7 +172,7 @@ export const SEED_CATEGORIES: SeedCategory[] = [
   },
   {
     slug: "character",
-    parentSlug: "3d-model",
+    parentSlug: "3d-design",
     name: "3D Character",
     shortName: "Character",
     order: 3,
@@ -195,7 +196,7 @@ export const SEED_CATEGORIES: SeedCategory[] = [
   },
   {
     slug: "environment",
-    parentSlug: "3d-model",
+    parentSlug: "3d-design",
     name: "3D Environment",
     shortName: "Environment",
     order: 4,
@@ -212,7 +213,7 @@ export const SEED_CATEGORIES: SeedCategory[] = [
   },
   {
     slug: "props-objects",
-    parentSlug: "3d-model",
+    parentSlug: "3d-design",
     name: "3D Props & Objects",
     shortName: "Props & Objects",
     order: 5,

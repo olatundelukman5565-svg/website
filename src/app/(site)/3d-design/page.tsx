@@ -6,18 +6,18 @@ import { DivisionLanding } from "@/components/site/division-landing";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "2D",
-  description: "2D architectural drawing, technical drawing, and character art from Neo Vision Team.",
+  title: "3D Design",
+  description: "3D architectural visualization, printing & sculpture, and character modeling from Neo Vision Team.",
 };
 
-export default async function TwoDLandingPage() {
+export default async function ThreeDDesignLandingPage() {
   const categories = await listCategories();
-  const division = categories.find((c) => c.slug === "2d" && !c.parentId);
+  const division = categories.find((c) => c.slug === "3d-design" && !c.parentId);
   if (!division || !division.enabled) notFound();
 
   const subcategories = categories
     .filter((c) => c.parentId === division.id && c.enabled)
     .sort((a, b) => a.order - b.order);
 
-  return <DivisionLanding division={division} subcategories={subcategories} accent="amber" />;
+  return <DivisionLanding division={division} subcategories={subcategories} accent="emerald" />;
 }

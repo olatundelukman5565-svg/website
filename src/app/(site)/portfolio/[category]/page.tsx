@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 
 /**
  * Legacy URL shim. Categories used to live at a single flat /portfolio/[category]
- * segment; the site is now organized as /2d/[subcategory] and /3d-model/[subcategory].
+ * segment; the site is now organized as /2d-design/[subcategory] and /3d-design/[subcategory].
  * This route resolves the old slug and redirects to the canonical new location, so
  * any bookmarked or indexed links keep working instead of 404ing.
  */

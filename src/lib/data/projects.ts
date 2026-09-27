@@ -112,7 +112,7 @@ export async function getProjectBySlug(
   return toProject(doc.id, doc.data());
 }
 
-/** Unambiguous project lookup used by the /2d and /3d-model routes, keyed by categoryId rather than the (now potentially non-unique) categorySlug string. */
+/** Unambiguous project lookup used by the /2d-design and /3d-design routes, keyed by categoryId rather than the (now potentially non-unique) categorySlug string. */
 export async function getProjectByCategoryAndSlug(
   categoryId: string,
   projectSlug: string

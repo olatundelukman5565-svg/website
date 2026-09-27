@@ -6,8 +6,8 @@ import { ProjectCard } from "@/components/site/project-card";
 import { GalleryLightbox } from "@/components/site/gallery-lightbox";
 
 /**
- * Renders a full project detail page. Shared by /2d/[subcategory]/[project],
- * /3d-model/[subcategory]/[project], and the legacy /portfolio route, so
+ * Renders a full project detail page. Shared by /2d-design/[subcategory]/[project],
+ * /3d-design/[subcategory]/[project], and the legacy /portfolio route, so
  * there is exactly one project detail implementation.
  */
 export function ProjectDetail({

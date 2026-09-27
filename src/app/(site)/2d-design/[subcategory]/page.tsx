@@ -13,7 +13,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { subcategory } = await params;
   const categories = await listCategories();
-  const division = categories.find((c) => c.slug === "2d" && !c.parentId);
+  const division = categories.find((c) => c.slug === "2d-design" && !c.parentId);
   if (!division) return {};
   const category = categories.find((c) => c.parentId === division.id && c.slug === subcategory);
   if (!category) return {};
@@ -27,7 +27,7 @@ export default async function TwoDSubcategoryPage({
 }) {
   const { subcategory } = await params;
   const categories = await listCategories();
-  const division = categories.find((c) => c.slug === "2d" && !c.parentId);
+  const division = categories.find((c) => c.slug === "2d-design" && !c.parentId);
   if (!division) notFound();
 
   const category = await getChildCategoryBySlug(division.id, subcategory);
@@ -41,7 +41,7 @@ export default async function TwoDSubcategoryPage({
       parent={division}
       projects={projects}
       allCategories={categories}
-      breadcrumbBase={[{ label: division.name, href: "/2d" }]}
+      breadcrumbBase={[{ label: division.name, href: "/2d-design" }]}
     />
   );
 }

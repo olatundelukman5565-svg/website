@@ -32,20 +32,32 @@ function DivisionDropdown({
         {label}
       </Link>
       {open && subcategories.length > 0 && (
-        <div className="absolute left-1/2 top-full w-72 -translate-x-1/2 pt-3">
-          <div className="rounded-xl border border-stone-200 bg-white p-2 shadow-lg">
-            {subcategories.map((sc) => (
-              <Link
-                key={sc.id}
-                href={`${href}/${sc.slug}`}
-                className="block rounded-lg px-3 py-2 text-sm text-stone-700 hover:bg-stone-50 hover:text-amber-600"
-              >
-                {sc.shortName || sc.name}
-              </Link>
-            ))}
+        <div className="absolute left-1/2 top-full w-80 -translate-x-1/2 pt-3">
+          <div className="overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-xl">
+            <p className="border-b border-stone-100 px-4 py-3 text-xs font-semibold uppercase tracking-[0.2em] text-stone-400">
+              {label}
+            </p>
+            <div className="p-2">
+              {subcategories.map((sc) => (
+                <Link
+                  key={sc.id}
+                  href={`${href}/${sc.slug}`}
+                  className="block rounded-xl px-3 py-2.5 transition hover:bg-stone-50"
+                >
+                  <span className="block text-sm font-semibold text-stone-900">
+                    {sc.shortName || sc.name}
+                  </span>
+                  {sc.description && (
+                    <span className="mt-0.5 block text-xs leading-snug text-stone-500">
+                      {sc.description}
+                    </span>
+                  )}
+                </Link>
+              ))}
+            </div>
             <Link
               href={href}
-              className="mt-1 block rounded-lg border-t border-stone-100 px-3 py-2 text-sm font-medium text-amber-600 hover:bg-stone-50"
+              className="block border-t border-stone-100 px-4 py-2.5 text-sm font-medium text-amber-600 hover:bg-stone-50"
             >
               View all {label} work →
             </Link>
@@ -113,10 +125,14 @@ export function Navbar({ categories }: { categories: Category[] }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = usePathname();
 
-  const twoD = categories.find((c) => c.slug === "2d" && !c.parentId && c.enabled);
-  const threeDModel = categories.find((c) => c.slug === "3d-model" && !c.parentId && c.enabled);
-  const twoDSubs = twoD ? categories.filter((c) => c.parentId === twoD.id && c.enabled) : [];
-  const threeDSubs = threeDModel ? categories.filter((c) => c.parentId === threeDModel.id && c.enabled) : [];
+  const twoD = categories.find((c) => c.slug === "2d-design" && !c.parentId && c.enabled);
+  const threeD = categories.find((c) => c.slug === "3d-design" && !c.parentId && c.enabled);
+  const twoDSubs = twoD
+    ? categories.filter((c) => c.parentId === twoD.id && c.enabled).sort((a, b) => a.order - b.order)
+    : [];
+  const threeDSubs = threeD
+    ? categories.filter((c) => c.parentId === threeD.id && c.enabled).sort((a, b) => a.order - b.order)
+    : [];
 
   const navLink = (href: string, label: string) => (
     <Link
@@ -145,19 +161,19 @@ export function Navbar({ categories }: { categories: Category[] }) {
         <nav className="hidden items-center gap-8 md:flex">
           {navLink("/", "Home")}
           {twoD && (
-            <DivisionDropdown label="2D" slug="2d" subcategories={twoDSubs} pathname={pathname} />
+            <DivisionDropdown label="2D Design" slug="2d-design" subcategories={twoDSubs} pathname={pathname} />
           )}
-          {threeDModel && (
+          {threeD && (
             <DivisionDropdown
-              label="3D Model"
-              slug="3d-model"
+              label="3D Design"
+              slug="3d-design"
               subcategories={threeDSubs}
               pathname={pathname}
             />
           )}
           {navLink("/portfolio", "Portfolio")}
-          {navLink("/about", "About")}
           {navLink("/live-chat", "Live Chat")}
+          {navLink("/about", "About")}
           {navLink("/contact", "Contact")}
         </nav>
 
@@ -193,16 +209,16 @@ export function Navbar({ categories }: { categories: Category[] }) {
             </Link>
             {twoD && (
               <MobileAccordionSection
-                label="2D"
-                slug="2d"
+                label="2D Design"
+                slug="2d-design"
                 subcategories={twoDSubs}
                 onNavigate={() => setMobileOpen(false)}
               />
             )}
-            {threeDModel && (
+            {threeD && (
               <MobileAccordionSection
-                label="3D Model"
-                slug="3d-model"
+                label="3D Design"
+                slug="3d-design"
                 subcategories={threeDSubs}
                 onNavigate={() => setMobileOpen(false)}
               />
@@ -210,14 +226,14 @@ export function Navbar({ categories }: { categories: Category[] }) {
             <Link href="/portfolio" className="rounded-md px-2 py-2.5 text-sm font-medium text-stone-700" onClick={() => setMobileOpen(false)}>
               Portfolio
             </Link>
+            <Link href="/live-chat" className="rounded-md px-2 py-2.5 text-sm font-medium text-stone-700" onClick={() => setMobileOpen(false)}>
+              Live Chat
+            </Link>
             <Link href="/about" className="rounded-md px-2 py-2.5 text-sm font-medium text-stone-700" onClick={() => setMobileOpen(false)}>
               About
             </Link>
             <Link href="/contact" className="rounded-md px-2 py-2.5 text-sm font-medium text-stone-700" onClick={() => setMobileOpen(false)}>
               Contact
-            </Link>
-            <Link href="/live-chat" className="rounded-md px-2 py-2.5 text-sm font-medium text-stone-700" onClick={() => setMobileOpen(false)}>
-              Live Chat
             </Link>
             <Link
               href="/contact"

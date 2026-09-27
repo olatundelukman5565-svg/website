@@ -13,7 +13,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { subcategory } = await params;
   const categories = await listCategories();
-  const division = categories.find((c) => c.slug === "3d-model" && !c.parentId);
+  const division = categories.find((c) => c.slug === "3d-design" && !c.parentId);
   if (!division) return {};
   const category = categories.find((c) => c.parentId === division.id && c.slug === subcategory);
   if (!category) return {};
@@ -27,7 +27,7 @@ export default async function ThreeDModelSubcategoryPage({
 }) {
   const { subcategory } = await params;
   const categories = await listCategories();
-  const division = categories.find((c) => c.slug === "3d-model" && !c.parentId);
+  const division = categories.find((c) => c.slug === "3d-design" && !c.parentId);
   if (!division) notFound();
 
   const category = await getChildCategoryBySlug(division.id, subcategory);
@@ -41,7 +41,7 @@ export default async function ThreeDModelSubcategoryPage({
       parent={division}
       projects={projects}
       allCategories={categories}
-      breadcrumbBase={[{ label: division.name, href: "/3d-model" }]}
+      breadcrumbBase={[{ label: division.name, href: "/3d-design" }]}
     />
   );
 }

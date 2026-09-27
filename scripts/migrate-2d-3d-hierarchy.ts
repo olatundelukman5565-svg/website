@@ -1,7 +1,12 @@
 /**
  * Safe, idempotent migration from the old flat 6-category taxonomy to the new
- * 2D / 3D Model hierarchy. Dry-run by default — prints exactly what it would
- * do. Pass --apply to actually write changes.
+ * 2D Design / 3D Design hierarchy. Dry-run by default — prints exactly what it
+ * would do. Pass --apply to actually write changes.
+ *
+ * Also safe to run against a database that already ran an earlier version of
+ * this script targeting the (now renamed) "2d" / "3d-model" pillar slugs —
+ * step 0 below renames those pillars to "2d-design" / "3d-design" in place
+ * first, so everything downstream just sees the final names.
  *
  * Never deletes a project. The only category ever deleted is the old
  * "city-permit-drawings" category, and only after every project referencing
@@ -33,12 +38,15 @@ interface RawProject {
 
 // old top-level slug -> where it gets repurposed to (parent slug + slug in the new tree)
 const REPURPOSE: Record<string, { parentSlug: string; slug: string }> = {
-  "2d-architectural-design": { parentSlug: "2d", slug: "architecture" },
-  "3d-architectural-visualization": { parentSlug: "3d-model", slug: "architecture" },
-  "3d-character-modeling": { parentSlug: "3d-model", slug: "character" },
-  "3d-environment-modeling": { parentSlug: "3d-model", slug: "environment" },
-  "3d-props-object-modeling": { parentSlug: "3d-model", slug: "props-objects" },
+  "2d-architectural-design": { parentSlug: "2d-design", slug: "architecture" },
+  "3d-architectural-visualization": { parentSlug: "3d-design", slug: "architecture" },
+  "3d-character-modeling": { parentSlug: "3d-design", slug: "character" },
+  "3d-environment-modeling": { parentSlug: "3d-design", slug: "environment" },
+  "3d-props-object-modeling": { parentSlug: "3d-design", slug: "props-objects" },
 };
+
+// pillar slug from an earlier run of this script -> its current name
+const PILLAR_RENAMES: Record<string, string> = { "2d": "2d-design", "3d-model": "3d-design" };
 
 // old category slug -> old slug of the category its projects should be folded into
 const MERGE_INTO: Record<string, string> = {
@@ -72,9 +80,31 @@ async function main() {
   const log = (msg: string) => console.log(msg);
   const plan: (() => Promise<void>)[] = [];
 
+  // 0. Rename pillars from an earlier run of this script, if present. Mutates the
+  // in-memory record immediately so every lookup below sees the final slug, even
+  // in a dry run where the Firestore write itself is deferred.
+  for (const [oldPillarSlug, newPillarSlug] of Object.entries(PILLAR_RENAMES)) {
+    const existing = bySlug(oldPillarSlug);
+    if (!existing) continue;
+    const seed = findSeed(undefined, newPillarSlug);
+    log(`[rename] pillar "${oldPillarSlug}" (${existing.id}) -> "${newPillarSlug}"`);
+    existing.slug = newPillarSlug;
+    existing.name = seed.name;
+    plan.push(async () => {
+      await adminDb.collection("categories").doc(existing.id).update({
+        slug: seed.slug,
+        name: seed.name,
+        shortName: seed.shortName,
+        description: seed.description,
+        intro: seed.intro,
+        updatedAt: new Date(),
+      });
+    });
+  }
+
   // 1. Ensure the two top-level pillars exist.
   const pillarIds: Record<string, string> = {};
-  for (const pillarSlug of ["2d", "3d-model"]) {
+  for (const pillarSlug of ["2d-design", "3d-design"]) {
     const existing = bySlug(pillarSlug);
     if (existing) {
       pillarIds[pillarSlug] = existing.id;
@@ -103,7 +133,7 @@ async function main() {
   }
 
   // Resolve pillar ids up front for dry-run reporting even if they don't exist yet.
-  for (const pillarSlug of ["2d", "3d-model"]) {
+  for (const pillarSlug of ["2d-design", "3d-design"]) {
     if (!pillarIds[pillarSlug]) {
       const existing = bySlug(pillarSlug);
       if (existing) pillarIds[pillarSlug] = existing.id;

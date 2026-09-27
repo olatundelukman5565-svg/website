@@ -5,8 +5,8 @@ import { ProjectCard } from "@/components/site/project-card";
 
 /**
  * Renders a subcategory's full landing experience: breadcrumb, intro, capability
- * pills, and its published project grid. Shared by both the new /2d/[subcategory]
- * and /3d-model/[subcategory] routes and the legacy /portfolio/[category] route,
+ * pills, and its published project grid. Shared by both the new /2d-design/[subcategory]
+ * and /3d-design/[subcategory] routes and the legacy /portfolio/[category] route,
  * so there is exactly one portfolio rendering implementation, not several.
  */
 export function CategoryShowcase({
@@ -20,7 +20,7 @@ export function CategoryShowcase({
   parent: Category | null;
   projects: Project[];
   allCategories: Category[];
-  /** e.g. [{label:"2D", href:"/2d"}] */
+  /** e.g. [{label:"2D Design", href:"/2d-design"}] */
   breadcrumbBase: { label: string; href: string }[];
 }) {
   return (

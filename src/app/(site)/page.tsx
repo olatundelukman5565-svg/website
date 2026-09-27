@@ -15,15 +15,13 @@ export default async function HomePage() {
   const featured =
     configuredFeatured.length > 0 ? configuredFeatured : await listFeaturedProjects(6);
 
-  const twoD = categories.find((c) => c.slug === "2d" && !c.parentId && c.enabled);
-  const threeDModel = categories.find((c) => c.slug === "3d-model" && !c.parentId && c.enabled);
+  const twoD = categories.find((c) => c.slug === "2d-design" && !c.parentId && c.enabled);
+  const threeD = categories.find((c) => c.slug === "3d-design" && !c.parentId && c.enabled);
   const twoDSubs = twoD
     ? categories.filter((c) => c.parentId === twoD.id && c.enabled).sort((a, b) => a.order - b.order)
     : [];
-  const threeDSubs = threeDModel
-    ? categories
-        .filter((c) => c.parentId === threeDModel.id && c.enabled)
-        .sort((a, b) => a.order - b.order)
+  const threeDSubs = threeD
+    ? categories.filter((c) => c.parentId === threeD.id && c.enabled).sort((a, b) => a.order - b.order)
     : [];
   const categoriesById = Object.fromEntries(categories.map((c) => [c.id, c]));
 
@@ -70,17 +68,17 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 2D division */}
+      {/* 2D Design division */}
       {twoD && (
         <section className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div className="max-w-2xl">
               <p className="text-xs font-semibold uppercase tracking-[0.3em] text-amber-600">Primary division</p>
-              <h2 className="mt-3 font-display text-3xl font-semibold text-stone-900 sm:text-4xl">2D</h2>
+              <h2 className="mt-3 font-display text-3xl font-semibold text-stone-900 sm:text-4xl">2D Design</h2>
               <p className="mt-4 text-stone-500">{twoD.intro}</p>
             </div>
-            <Link href="/2d" className="text-sm font-medium text-stone-700 hover:text-amber-600">
-              View all 2D work →
+            <Link href="/2d-design" className="text-sm font-medium text-stone-700 hover:text-amber-600">
+              View all 2D Design work →
             </Link>
           </div>
 
@@ -88,7 +86,7 @@ export default async function HomePage() {
             {twoDSubs.map((c) => (
               <Link
                 key={c.id}
-                href={`/2d/${c.slug}`}
+                href={`/2d-design/${c.slug}`}
                 className="group rounded-2xl border border-stone-200 p-7 transition hover:border-amber-400 hover:shadow-lg"
               >
                 <h3 className="font-display text-xl font-semibold text-stone-900 group-hover:text-amber-600">
@@ -102,8 +100,8 @@ export default async function HomePage() {
         </section>
       )}
 
-      {/* 3D Model division */}
-      {threeDModel && (
+      {/* 3D Design division */}
+      {threeD && (
         <section className="bg-stone-950 py-24 text-white">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="flex flex-wrap items-end justify-between gap-4">
@@ -111,11 +109,11 @@ export default async function HomePage() {
                 <p className="text-xs font-semibold uppercase tracking-[0.3em] text-emerald-400">
                   Primary division
                 </p>
-                <h2 className="mt-3 font-display text-3xl font-semibold sm:text-4xl">3D Model</h2>
-                <p className="mt-4 text-stone-300">{threeDModel.intro}</p>
+                <h2 className="mt-3 font-display text-3xl font-semibold sm:text-4xl">3D Design</h2>
+                <p className="mt-4 text-stone-300">{threeD.intro}</p>
               </div>
-              <Link href="/3d-model" className="text-sm font-medium text-stone-300 hover:text-emerald-400">
-                View all 3D work →
+              <Link href="/3d-design" className="text-sm font-medium text-stone-300 hover:text-emerald-400">
+                View all 3D Design work →
               </Link>
             </div>
 
@@ -123,7 +121,7 @@ export default async function HomePage() {
               {threeDSubs.map((c) => (
                 <Link
                   key={c.id}
-                  href={`/3d-model/${c.slug}`}
+                  href={`/3d-design/${c.slug}`}
                   className="group rounded-2xl border border-stone-800 p-7 transition hover:border-emerald-400"
                 >
                   <h3 className="font-display text-xl font-semibold text-white group-hover:text-emerald-400">
