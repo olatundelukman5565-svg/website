@@ -22,8 +22,8 @@ export function Footer({ categories, contact }: { categories: Category[]; contac
             <ul className="mt-4 space-y-2 text-sm">
               <li><Link href="/about" className="hover:text-amber-400">About</Link></li>
               <li><Link href="/portfolio" className="hover:text-amber-400">Portfolio</Link></li>
+              <li><Link href="/live-chat" className="hover:text-amber-400">Live Chat</Link></li>
               <li><Link href="/contact" className="hover:text-amber-400">Contact</Link></li>
-              <li><Link href="/admin/login" className="hover:text-amber-400">Admin</Link></li>
             </ul>
           </div>
 
