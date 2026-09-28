@@ -2,12 +2,14 @@ import Link from "next/link";
 import { listCategories } from "@/lib/data/categories";
 import { listAllProjects } from "@/lib/data/projects";
 import { listMessages } from "@/lib/data/messages";
+import { getAnalyticsSummary } from "@/lib/data/analytics";
 
 export default async function AdminDashboardPage() {
-  const [categories, projects, messages] = await Promise.all([
+  const [categories, projects, messages, analytics] = await Promise.all([
     listCategories(),
     listAllProjects(),
     listMessages(),
+    getAnalyticsSummary(),
   ]);
 
   const published = projects.filter((p) => p.status === "published").length;
@@ -15,6 +17,7 @@ export default async function AdminDashboardPage() {
   const unread = messages.filter((m) => !m.read).length;
 
   const stats = [
+    { label: "Total site visits", value: analytics.totalVisits, href: "/admin/analytics" },
     { label: "Categories", value: categories.length, href: "/admin/categories" },
     { label: "Published projects", value: published, href: "/admin/projects" },
     { label: "Draft projects", value: drafts, href: "/admin/projects" },
@@ -26,7 +29,7 @@ export default async function AdminDashboardPage() {
       <h1 className="text-2xl font-semibold text-stone-900">Dashboard</h1>
       <p className="mt-1 text-stone-500">Overview of your portfolio content.</p>
 
-      <div className="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
+      <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
         {stats.map((s) => (
           <Link
             key={s.label}
