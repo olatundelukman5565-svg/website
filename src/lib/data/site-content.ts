@@ -33,9 +33,9 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
     featuredProjectIds: [],
   },
   about: {
-    intro: "Neo Vision Team is a digital architecture and 3D visualization studio.",
+    intro: "Neo Vision Team is a full-spectrum 2D and 3D design studio.",
     body:
-      "We work at the intersection of architecture and digital craft — producing technical 2D drawings, permit documentation, architectural 3D visualization, and a full range of 3D modeling for characters, environments, props, and objects. Our team blends design sensibility with production discipline so every project is both beautiful and buildable.",
+      "Neo Vision Team is a digital design studio built around two disciplines: 2D Design and 3D Design. On the 2D side, we produce construction-ready architectural drawings and permit documentation, patent-style technical and engineering illustration, and original 2D character art. On the 3D side, we build photoreal architectural visualization, digital sculpture and print-ready models, and full production-quality 3D characters.\n\nWe work directly with architects, product teams, inventors, game studios, and independent creators — anyone who needs precise, professional 2D or 3D work without managing an in-house team. Every project moves through the same disciplined process regardless of size: a clear brief, careful technical execution, a visual refinement pass, and a clean, organized handoff of final files.\n\nWe're available for direct engagements through this website's chat and contact form, and we also take on projects through Upwork and Fiverr for clients who prefer to work through those platforms — same team, same quality, same process, whichever way you'd rather hire us.",
     approach: [
       {
         title: "Understand the brief",
@@ -55,13 +55,39 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
       },
     ],
     capabilities: [
-      "Architectural floor plans, elevations & sections",
-      "Construction & technical drawings",
-      "City permit / permit-ready drawing sets",
-      "3D architectural visualization & walkthroughs",
-      "3D character modeling & design",
-      "3D environment & world building",
-      "3D props, furniture & product modeling",
+      "2D Architecture — floor plans, elevations, sections, city permit & construction drawings",
+      "Technical Drawing — patent, engineering, mechanical & product technical illustration",
+      "2D Character Art — character design, illustration, concept art & character sheets",
+      "3D Architecture — architectural modeling, interior/exterior rendering & visualization",
+      "3D Printing & Sculpture — digital sculpting, figurines, collectibles & print-ready models",
+      "3D Character — game-ready and animation-ready character modeling & sculpting",
+    ],
+    faqs: [
+      {
+        question: "Do you work with clients outside your home country?",
+        answer:
+          "Yes — we're a remote-first studio and work with clients worldwide. All communication, files, and revisions happen online through this website's live chat, email, or your platform of choice.",
+      },
+      {
+        question: "Can I hire you through Upwork or Fiverr instead of this website?",
+        answer:
+          "Yes. We take on projects directly through this website as well as through Upwork and Fiverr. It's the same team and process either way — use whichever platform you're most comfortable with.",
+      },
+      {
+        question: "What file formats do you deliver?",
+        answer:
+          "It depends on the project — common deliverables include PDF drawing sets, high-resolution images and renders, and 3D files in formats like OBJ/STL/FBX. Tell us your required format up front and we'll match it.",
+      },
+      {
+        question: "Do you offer revisions?",
+        answer:
+          "Yes, revisions are part of our standard process. We refine drawings and visualizations with you until the result matches the brief before final delivery.",
+      },
+      {
+        question: "How do I start a project?",
+        answer:
+          "Use the Live Chat button, the contact form, or WhatsApp — tell us what you need (2D drawings, a 3D render, a character model, etc.) and we'll follow up with next steps and timing.",
+      },
     ],
   },
   contact: {
@@ -81,6 +107,8 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
     welcomeMessage:
       "Hello! Welcome to Neo Vision Team. How can we help with your architectural or 3D project?",
     popupEnabled: true,
+    upworkUrl: "",
+    fiverrUrl: "",
   },
 };
 

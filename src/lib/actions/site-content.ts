@@ -45,6 +45,17 @@ function parseSocial(raw: string): { label: string; url: string }[] {
     });
 }
 
+function parseFaqs(raw: string): { question: string; answer: string }[] {
+  return raw
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .map((line) => {
+      const [question, ...rest] = line.split("::");
+      return { question: question.trim(), answer: rest.join("::").trim() };
+    });
+}
+
 export async function updateHomepageAction(
   _prevState: SettingsFormState,
   formData: FormData
@@ -86,6 +97,7 @@ export async function updateAboutAction(
     body: String(formData.get("body") || ""),
     approach: parsePairs(String(formData.get("approach") || "")),
     capabilities: parseLines(String(formData.get("capabilities") || "")),
+    faqs: parseFaqs(String(formData.get("faqs") || "")),
   });
 
   revalidatePath("/about");
@@ -123,9 +135,12 @@ export async function updateCommunicationAction(
     chatEnabled: formData.get("chatEnabled") === "on",
     welcomeMessage: String(formData.get("welcomeMessage") || "").trim(),
     popupEnabled: formData.get("popupEnabled") === "on",
+    upworkUrl: String(formData.get("upworkUrl") || "").trim(),
+    fiverrUrl: String(formData.get("fiverrUrl") || "").trim(),
   });
 
   revalidatePath("/");
+  revalidatePath("/about");
   revalidatePath("/contact");
   revalidatePath("/admin/settings");
   return { success: true };

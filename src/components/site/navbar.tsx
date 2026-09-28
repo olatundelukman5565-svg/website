@@ -171,7 +171,6 @@ export function Navbar({ categories }: { categories: Category[] }) {
               pathname={pathname}
             />
           )}
-          {navLink("/portfolio", "Portfolio")}
           {navLink("/live-chat", "Live Chat")}
           {navLink("/about", "About")}
           {navLink("/contact", "Contact")}
@@ -223,9 +222,6 @@ export function Navbar({ categories }: { categories: Category[] }) {
                 onNavigate={() => setMobileOpen(false)}
               />
             )}
-            <Link href="/portfolio" className="rounded-md px-2 py-2.5 text-sm font-medium text-stone-700" onClick={() => setMobileOpen(false)}>
-              Portfolio
-            </Link>
             <Link href="/live-chat" className="rounded-md px-2 py-2.5 text-sm font-medium text-stone-700" onClick={() => setMobileOpen(false)}>
               Live Chat
             </Link>

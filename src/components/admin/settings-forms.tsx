@@ -155,6 +155,18 @@ export function AboutSettingsForm({ content }: { content: AboutContent }) {
           className={`${fieldClass} font-mono text-sm`}
         />
       </div>
+      <div>
+        <label htmlFor="faqs" className={labelClass}>
+          FAQs <span className="text-stone-400">(one per line: Question :: Answer)</span>
+        </label>
+        <textarea
+          id="faqs"
+          name="faqs"
+          defaultValue={content.faqs.map((f) => `${f.question} :: ${f.answer}`).join("\n")}
+          rows={6}
+          className={`${fieldClass} font-mono text-sm`}
+        />
+      </div>
       <StatusBanner state={state} />
       <button
         type="submit"
@@ -283,6 +295,38 @@ export function CommunicationSettingsForm({ content }: { content: CommunicationS
         <label htmlFor="popupEnabled" className="text-sm font-medium text-stone-700">
           Show the floating &quot;Contact Me&quot; button across the website
         </label>
+      </div>
+
+      <div>
+        <label htmlFor="upworkUrl" className={labelClass}>
+          Upwork profile URL <span className="text-stone-400">(optional)</span>
+        </label>
+        <input
+          id="upworkUrl"
+          name="upworkUrl"
+          defaultValue={content.upworkUrl}
+          placeholder="https://www.upwork.com/freelancers/~..."
+          className={fieldClass}
+        />
+        <p className="mt-1 text-xs text-stone-400">
+          Leave blank to hide the Upwork button on the About page.
+        </p>
+      </div>
+
+      <div>
+        <label htmlFor="fiverrUrl" className={labelClass}>
+          Fiverr profile URL <span className="text-stone-400">(optional)</span>
+        </label>
+        <input
+          id="fiverrUrl"
+          name="fiverrUrl"
+          defaultValue={content.fiverrUrl}
+          placeholder="https://www.fiverr.com/..."
+          className={fieldClass}
+        />
+        <p className="mt-1 text-xs text-stone-400">
+          Leave blank to hide the Fiverr button on the About page.
+        </p>
       </div>
 
       <StatusBanner state={state} />

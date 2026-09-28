@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import { listCategories } from "@/lib/data/categories";
 import { listPublishedProjectsByIds, listFeaturedProjects } from "@/lib/data/projects";
 import { getSiteContent } from "@/lib/data/site-content";
@@ -7,6 +6,7 @@ import { projectHref } from "@/lib/portfolio-paths";
 
 export const dynamic = "force-dynamic";
 import { ProjectCard } from "@/components/site/project-card";
+import { HeroSlideshow, type HeroSlide } from "@/components/site/hero-slideshow";
 
 export default async function HomePage() {
   const [categories, content] = await Promise.all([listCategories(), getSiteContent()]);
@@ -14,6 +14,19 @@ export default async function HomePage() {
   const configuredFeatured = await listPublishedProjectsByIds(content.homepage.featuredProjectIds);
   const featured =
     configuredFeatured.length > 0 ? configuredFeatured : await listFeaturedProjects(6);
+
+  const seenSlideUrls = new Set<string>();
+  const heroSlides: HeroSlide[] = [];
+  for (const project of featured) {
+    const url = project.coverImage?.url;
+    if (!url || seenSlideUrls.has(url)) continue;
+    seenSlideUrls.add(url);
+    heroSlides.push({ url, title: project.title });
+    if (heroSlides.length >= 6) break;
+  }
+  if (heroSlides.length === 0 && content.homepage.heroImageUrl) {
+    heroSlides.push({ url: content.homepage.heroImageUrl, title: content.homepage.heroTitle });
+  }
 
   const twoD = categories.find((c) => c.slug === "2d-design" && !c.parentId && c.enabled);
   const threeD = categories.find((c) => c.slug === "3d-design" && !c.parentId && c.enabled);
@@ -29,17 +42,7 @@ export default async function HomePage() {
     <div>
       {/* Hero */}
       <section className="relative overflow-hidden bg-stone-950 text-white">
-        {content.homepage.heroImageUrl && (
-          <div className="absolute inset-0">
-            <Image
-              src={content.homepage.heroImageUrl}
-              alt=""
-              fill
-              priority
-              className="object-cover opacity-40"
-            />
-          </div>
-        )}
+        <HeroSlideshow slides={heroSlides} />
         <div className="absolute inset-0 bg-gradient-to-b from-stone-950/60 via-stone-950/70 to-stone-950" />
         <div className="relative mx-auto max-w-7xl px-4 py-28 sm:px-6 lg:px-8 lg:py-40">
           <p className="text-xs font-semibold uppercase tracking-[0.35em] text-amber-500">
@@ -53,10 +56,10 @@ export default async function HomePage() {
           </p>
           <div className="mt-10 flex flex-wrap gap-4">
             <Link
-              href="/portfolio"
+              href="#work"
               className="rounded-full bg-amber-500 px-7 py-3.5 text-sm font-semibold text-stone-950 transition hover:bg-amber-400"
             >
-              View Portfolio
+              Explore Our Work
             </Link>
             <Link
               href="/contact"
@@ -70,7 +73,7 @@ export default async function HomePage() {
 
       {/* 2D Design division */}
       {twoD && (
-        <section className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
+        <section id="work" className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div className="max-w-2xl">
               <p className="text-xs font-semibold uppercase tracking-[0.3em] text-amber-600">Primary division</p>
@@ -140,16 +143,11 @@ export default async function HomePage() {
       {featured.length > 0 && (
         <section className="bg-stone-50 py-24">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="flex flex-wrap items-end justify-between gap-4">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.3em] text-amber-600">Selected work</p>
-                <h2 className="mt-3 font-display text-3xl font-semibold text-stone-900 sm:text-4xl">
-                  Featured projects
-                </h2>
-              </div>
-              <Link href="/portfolio" className="text-sm font-medium text-stone-700 hover:text-amber-600">
-                View full portfolio →
-              </Link>
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.3em] text-amber-600">Selected work</p>
+              <h2 className="mt-3 font-display text-3xl font-semibold text-stone-900 sm:text-4xl">
+                Featured projects
+              </h2>
             </div>
             <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {featured.map((p, i) => (
