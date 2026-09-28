@@ -12,6 +12,7 @@ const LINKS = [
   { href: "/admin/chat", label: "Live Chat" },
   { href: "/admin/messages", label: "Contact Messages" },
   { href: "/admin/settings", label: "Site content" },
+  { href: "/admin/migrate", label: "Data migration" },
 ];
 
 export function AdminSidebar({
