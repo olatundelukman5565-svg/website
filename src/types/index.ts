@@ -78,6 +78,7 @@ export interface AboutContent {
   body: string;
   approach: { title: string; description: string }[];
   capabilities: string[];
+  faqs: { question: string; answer: string }[];
 }
 
 export interface ContactInfo {
@@ -93,6 +94,8 @@ export interface CommunicationSettings {
   chatEnabled: boolean;
   welcomeMessage: string;
   popupEnabled: boolean;
+  upworkUrl: string;
+  fiverrUrl: string;
 }
 
 export interface SiteContent {

@@ -28,8 +28,8 @@ export function CategoryShowcase({
       <section className="bg-stone-950 py-20 text-white">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex flex-wrap items-center gap-2 text-sm text-stone-400">
-            <Link href="/portfolio" className="hover:text-amber-400">
-              Portfolio
+            <Link href="/" className="hover:text-amber-400">
+              Home
             </Link>
             {breadcrumbBase.map((crumb) => (
               <span key={crumb.href} className="flex items-center gap-2">

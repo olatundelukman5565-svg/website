@@ -1,4 +1,14 @@
+import type { Metadata, Viewport } from "next";
 import { LoginForm } from "@/components/admin/login-form";
+
+export const metadata: Metadata = {
+  title: "Admin sign in",
+  manifest: "/admin-manifest.webmanifest",
+};
+
+export const viewport: Viewport = {
+  themeColor: "#0c0a09",
+};
 
 export default async function AdminLoginPage({
   searchParams,

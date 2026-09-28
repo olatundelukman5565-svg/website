@@ -34,7 +34,7 @@ export function ProjectDetail({
         <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/40 to-stone-950/10" />
         <div className="absolute inset-x-0 bottom-0 mx-auto max-w-7xl px-4 pb-12 sm:px-6 lg:px-8">
           <div className="flex flex-wrap items-center gap-2 text-sm text-stone-300">
-            <Link href="/portfolio" className="hover:text-amber-400">Portfolio</Link>
+            <Link href="/" className="hover:text-amber-400">Home</Link>
             {breadcrumbBase.map((crumb) => (
               <span key={crumb.href} className="flex items-center gap-2">
                 <span>/</span>
@@ -42,7 +42,7 @@ export function ProjectDetail({
               </span>
             ))}
             <span>/</span>
-            <Link href={breadcrumbBase.length ? `${breadcrumbBase[breadcrumbBase.length - 1].href}/${category.slug}` : `/portfolio/${category.slug}`} className="hover:text-amber-400">
+            <Link href={breadcrumbBase.length ? `${breadcrumbBase[breadcrumbBase.length - 1].href}/${category.slug}` : `/${category.slug}`} className="hover:text-amber-400">
               {category.shortName || category.name}
             </Link>
           </div>

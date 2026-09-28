@@ -4,7 +4,6 @@ export const NAV_LINKS = [
   { label: "Home", href: "/" },
   { label: "2D Design", href: "/2d-design" },
   { label: "3D Design", href: "/3d-design" },
-  { label: "Portfolio", href: "/portfolio" },
   { label: "Live Chat", href: "/live-chat" },
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },

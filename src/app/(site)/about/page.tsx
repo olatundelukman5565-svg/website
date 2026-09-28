@@ -61,17 +61,70 @@ export default async function AboutPage() {
             </li>
           ))}
         </ul>
+
+        {(content.communication.upworkUrl || content.communication.fiverrUrl) && (
+          <div className="mt-10 flex flex-wrap items-center gap-4 rounded-xl border border-stone-200 bg-stone-50 p-6">
+            <p className="text-sm font-medium text-stone-600">Prefer to hire us on a platform?</p>
+            <div className="flex flex-wrap gap-3">
+              {content.communication.upworkUrl && (
+                <a
+                  href={content.communication.upworkUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded-full border border-stone-300 bg-white px-5 py-2.5 text-sm font-semibold text-stone-800 hover:border-amber-500 hover:text-amber-600"
+                >
+                  Hire us on Upwork
+                </a>
+              )}
+              {content.communication.fiverrUrl && (
+                <a
+                  href={content.communication.fiverrUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded-full border border-stone-300 bg-white px-5 py-2.5 text-sm font-semibold text-stone-800 hover:border-amber-500 hover:text-amber-600"
+                >
+                  Hire us on Fiverr
+                </a>
+              )}
+            </div>
+          </div>
+        )}
       </section>
+
+      {about.faqs.length > 0 && (
+        <section className="bg-stone-50 py-20">
+          <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-amber-600">Questions</p>
+            <h2 className="mt-3 font-display text-3xl font-semibold text-stone-900">
+              Frequently asked questions
+            </h2>
+            <div className="mt-10 space-y-4">
+              {about.faqs.map((faq) => (
+                <details
+                  key={faq.question}
+                  className="group rounded-xl border border-stone-200 bg-white p-5 open:border-amber-400"
+                >
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-display text-base font-semibold text-stone-900">
+                    {faq.question}
+                    <span className="shrink-0 text-xl text-amber-500 transition group-open:rotate-45">+</span>
+                  </summary>
+                  <p className="mt-3 text-sm leading-relaxed text-stone-600">{faq.answer}</p>
+                </details>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       <section className="bg-stone-950 py-20 text-white">
         <div className="mx-auto max-w-3xl px-4 text-center sm:px-6 lg:px-8">
           <h2 className="font-display text-3xl font-semibold">Ready to start a project?</h2>
           <div className="mt-8 flex flex-wrap justify-center gap-4">
             <Link
-              href="/portfolio"
+              href="/#work"
               className="rounded-full border border-stone-600 px-7 py-3.5 text-sm font-semibold hover:border-amber-500 hover:text-amber-400"
             >
-              View Portfolio
+              Explore Our Work
             </Link>
             <Link
               href="/contact"

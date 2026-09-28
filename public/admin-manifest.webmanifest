@@ -1,0 +1,14 @@
+{
+  "name": "Neo Vision Admin",
+  "short_name": "NV Admin",
+  "description": "Manage Neo Vision Team's live chat, projects, and site content.",
+  "start_url": "/admin",
+  "scope": "/admin",
+  "display": "standalone",
+  "background_color": "#0c0a09",
+  "theme_color": "#0c0a09",
+  "icons": [
+    { "src": "/icons/admin-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icons/admin-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
