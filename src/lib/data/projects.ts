@@ -112,16 +112,32 @@ export async function getProjectBySlug(
   return toProject(doc.id, doc.data());
 }
 
+/** Unambiguous project lookup used by the /2d-design and /3d-design routes, keyed by categoryId rather than the (now potentially non-unique) categorySlug string. */
+export async function getProjectByCategoryAndSlug(
+  categoryId: string,
+  projectSlug: string
+): Promise<Project | null> {
+  const snap = await adminDb
+    .collection(COLLECTION)
+    .where("categoryId", "==", categoryId)
+    .where("slug", "==", projectSlug)
+    .limit(1)
+    .get();
+  if (snap.empty) return null;
+  const doc = snap.docs[0];
+  return toProject(doc.id, doc.data());
+}
+
 export async function listAllProjects(): Promise<Project[]> {
   const snap = await adminDb.collection(COLLECTION).orderBy("createdAt", "desc").get();
   return snap.docs.map((d) => toProject(d.id, d.data()));
 }
 
 export async function listProjectsByCategory(
-  categorySlug: string,
+  categoryId: string,
   options: { publishedOnly?: boolean } = {}
 ): Promise<Project[]> {
-  let query = adminDb.collection(COLLECTION).where("categorySlug", "==", categorySlug) as FirebaseFirestore.Query;
+  let query = adminDb.collection(COLLECTION).where("categoryId", "==", categoryId) as FirebaseFirestore.Query;
   if (options.publishedOnly) {
     query = query.where("status", "==", "published");
   }
@@ -141,11 +157,11 @@ export async function listFeaturedProjects(limit = 6): Promise<Project[]> {
 }
 
 export async function listRelatedProjects(
-  categorySlug: string,
+  categoryId: string,
   excludeId: string,
   limit = 3
 ): Promise<Project[]> {
-  const projects = await listProjectsByCategory(categorySlug, { publishedOnly: true });
+  const projects = await listProjectsByCategory(categoryId, { publishedOnly: true });
   return projects.filter((p) => p.id !== excludeId).slice(0, limit);
 }
 

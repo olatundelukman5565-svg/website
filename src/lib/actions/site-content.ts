@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { requireAdmin } from "@/lib/auth";
 import {
   updateAboutContent,
+  updateCommunicationSettings,
   updateContactInfo,
   updateHomepageContent,
 } from "@/lib/data/site-content";
@@ -106,6 +107,25 @@ export async function updateContactAction(
     social: parseSocial(String(formData.get("social") || "")),
   });
 
+  revalidatePath("/contact");
+  revalidatePath("/admin/settings");
+  return { success: true };
+}
+
+export async function updateCommunicationAction(
+  _prevState: SettingsFormState,
+  formData: FormData
+): Promise<SettingsFormState> {
+  await requireAdmin();
+
+  await updateCommunicationSettings({
+    whatsappNumber: String(formData.get("whatsappNumber") || "").trim(),
+    chatEnabled: formData.get("chatEnabled") === "on",
+    welcomeMessage: String(formData.get("welcomeMessage") || "").trim(),
+    popupEnabled: formData.get("popupEnabled") === "on",
+  });
+
+  revalidatePath("/");
   revalidatePath("/contact");
   revalidatePath("/admin/settings");
   return { success: true };

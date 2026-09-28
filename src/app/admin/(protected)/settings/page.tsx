@@ -2,6 +2,7 @@ import { getSiteContent } from "@/lib/data/site-content";
 import { listAllProjects } from "@/lib/data/projects";
 import {
   AboutSettingsForm,
+  CommunicationSettingsForm,
   ContactSettingsForm,
   HomepageSettingsForm,
 } from "@/components/admin/settings-forms";
@@ -35,6 +36,16 @@ export default async function AdminSettingsPage() {
         <h2 className="mb-4 text-lg font-semibold text-stone-900">Contact information</h2>
         <div className="rounded-xl border border-stone-200 bg-white p-6">
           <ContactSettingsForm content={content.contact} />
+        </div>
+      </section>
+
+      <section>
+        <h2 className="mb-4 text-lg font-semibold text-stone-900">Client communication</h2>
+        <p className="-mt-3 mb-4 text-sm text-stone-500">
+          Controls the floating chat/WhatsApp button and the live chat widget across the site.
+        </p>
+        <div className="rounded-xl border border-stone-200 bg-white p-6">
+          <CommunicationSettingsForm content={content.communication} />
         </div>
       </section>
     </div>

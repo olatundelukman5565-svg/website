@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { listCategories } from "@/lib/data/categories";
 import { listAllProjects } from "@/lib/data/projects";
+import { categoryHref } from "@/lib/portfolio-paths";
 
 export const dynamic = "force-dynamic";
 
@@ -13,7 +14,7 @@ export const metadata: Metadata = {
 export default async function PortfolioIndexPage() {
   const [categories, projects] = await Promise.all([listCategories(), listAllProjects()]);
   const published = projects.filter((p) => p.status === "published");
-  const topLevel = categories.filter((c) => !c.parentId);
+  const topLevel = categories.filter((c) => !c.parentId && c.enabled);
 
   return (
     <div>
@@ -31,7 +32,7 @@ export default async function PortfolioIndexPage() {
       <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
         <div className="grid gap-6 sm:grid-cols-2">
           {topLevel.map((c) => {
-            const subcategories = categories.filter((sc) => sc.parentId === c.id);
+            const subcategories = categories.filter((sc) => sc.parentId === c.id && sc.enabled);
             const count = published.filter(
               (p) => p.categoryId === c.id || subcategories.some((sc) => sc.id === p.categoryId)
             ).length;
@@ -53,7 +54,7 @@ export default async function PortfolioIndexPage() {
                       {subcategories.map((sc) => (
                         <Link
                           key={sc.id}
-                          href={`/portfolio/${sc.slug}`}
+                          href={categoryHref(sc, categories)}
                           className="rounded-full border border-stone-200 px-3 py-1 text-xs font-medium text-stone-600 hover:border-amber-400 hover:text-amber-600"
                         >
                           {sc.shortName || sc.name}
@@ -63,7 +64,7 @@ export default async function PortfolioIndexPage() {
                   )}
                 </div>
                 <Link
-                  href={`/portfolio/${c.slug}`}
+                  href={categoryHref(c, categories)}
                   className="mt-6 inline-block text-sm font-semibold text-amber-600 hover:text-amber-700"
                 >
                   Explore {c.shortName || c.name} →

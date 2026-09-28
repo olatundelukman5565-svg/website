@@ -6,6 +6,7 @@ import { requireAdmin } from "@/lib/auth";
 import {
   createCategory,
   deleteCategory,
+  listCategories,
   updateCategory,
 } from "@/lib/data/categories";
 
@@ -32,6 +33,7 @@ export async function createCategoryAction(
   const capabilities = parseCapabilities(String(formData.get("capabilities") || ""));
   const order = Number(formData.get("order") || 0);
   const parentId = String(formData.get("parentId") || "") || null;
+  const enabled = formData.get("enabled") === "on";
 
   if (!name || !description || !intro) {
     return { error: "Name, description, and introduction are required." };
@@ -44,6 +46,7 @@ export async function createCategoryAction(
     capabilities,
     order,
     parentId,
+    enabled,
   });
 
   revalidatePath("/admin/categories");
@@ -64,12 +67,13 @@ export async function updateCategoryAction(
   const capabilities = parseCapabilities(String(formData.get("capabilities") || ""));
   const order = Number(formData.get("order") || 0);
   const parentId = String(formData.get("parentId") || "") || null;
+  const enabled = formData.get("enabled") === "on";
 
   if (!name || !description || !intro) {
     return { error: "Name, description, and introduction are required." };
   }
 
-  await updateCategory(id, { name, description, intro, capabilities, order, parentId });
+  await updateCategory(id, { name, description, intro, capabilities, order, parentId, enabled });
 
   revalidatePath("/admin/categories");
   revalidatePath(`/admin/categories/${id}`);
@@ -83,4 +87,27 @@ export async function deleteCategoryAction(id: string) {
   revalidatePath("/admin/categories");
   revalidatePath("/portfolio");
   redirect("/admin/categories");
+}
+
+export async function moveCategoryAction(id: string, direction: "up" | "down") {
+  await requireAdmin();
+  const all = await listCategories();
+  const current = all.find((c) => c.id === id);
+  if (!current) return;
+
+  const siblings = all
+    .filter((c) => (c.parentId ?? null) === (current.parentId ?? null))
+    .sort((a, b) => a.order - b.order || a.name.localeCompare(b.name));
+  const index = siblings.findIndex((c) => c.id === id);
+  const swapIndex = direction === "up" ? index - 1 : index + 1;
+  if (swapIndex < 0 || swapIndex >= siblings.length) return;
+
+  const sibling = siblings[swapIndex];
+  await Promise.all([
+    updateCategory(current.id, { order: sibling.order }),
+    updateCategory(sibling.id, { order: current.order }),
+  ]);
+
+  revalidatePath("/admin/categories");
+  revalidatePath("/portfolio");
 }

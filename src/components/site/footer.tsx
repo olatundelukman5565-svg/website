@@ -1,8 +1,9 @@
 import Link from "next/link";
 import type { Category, ContactInfo } from "@/types";
+import { categoryHref } from "@/lib/portfolio-paths";
 
 export function Footer({ categories, contact }: { categories: Category[]; contact: ContactInfo }) {
-  const topLevel = categories.filter((c) => !c.parentId);
+  const subcategories = categories.filter((c) => c.parentId && c.enabled);
 
   return (
     <footer className="border-t border-stone-800 bg-stone-950 text-stone-400">
@@ -21,17 +22,17 @@ export function Footer({ categories, contact }: { categories: Category[]; contac
             <ul className="mt-4 space-y-2 text-sm">
               <li><Link href="/about" className="hover:text-amber-400">About</Link></li>
               <li><Link href="/portfolio" className="hover:text-amber-400">Portfolio</Link></li>
+              <li><Link href="/live-chat" className="hover:text-amber-400">Live Chat</Link></li>
               <li><Link href="/contact" className="hover:text-amber-400">Contact</Link></li>
-              <li><Link href="/admin/login" className="hover:text-amber-400">Admin</Link></li>
             </ul>
           </div>
 
           <div>
             <p className="text-sm font-semibold uppercase tracking-wider text-stone-200">Services</p>
             <ul className="mt-4 space-y-2 text-sm">
-              {topLevel.map((c) => (
+              {subcategories.map((c) => (
                 <li key={c.id}>
-                  <Link href={`/portfolio/${c.slug}`} className="hover:text-amber-400">
+                  <Link href={categoryHref(c, categories)} className="hover:text-amber-400">
                     {c.shortName || c.name}
                   </Link>
                 </li>

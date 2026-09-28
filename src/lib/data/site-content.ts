@@ -1,5 +1,5 @@
 import { adminDb } from "@/lib/firebase-admin";
-import type { AboutContent, ContactInfo, HomepageContent, SiteContent } from "@/types";
+import type { AboutContent, CommunicationSettings, ContactInfo, HomepageContent, SiteContent } from "@/types";
 
 const DOC_PATH = { collection: "siteContent", doc: "main" };
 
@@ -75,6 +75,13 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
       { label: "LinkedIn", url: "https://linkedin.com" },
     ],
   },
+  communication: {
+    whatsappNumber: "",
+    chatEnabled: true,
+    welcomeMessage:
+      "Hello! Welcome to Neo Vision Team. How can we help with your architectural or 3D project?",
+    popupEnabled: true,
+  },
 };
 
 export async function getSiteContent(): Promise<SiteContent> {
@@ -85,6 +92,7 @@ export async function getSiteContent(): Promise<SiteContent> {
     homepage: { ...DEFAULT_SITE_CONTENT.homepage, ...(data.homepage ?? {}) },
     about: { ...DEFAULT_SITE_CONTENT.about, ...(data.about ?? {}) },
     contact: { ...DEFAULT_SITE_CONTENT.contact, ...(data.contact ?? {}) },
+    communication: { ...DEFAULT_SITE_CONTENT.communication, ...(data.communication ?? {}) },
   };
 }
 
@@ -107,4 +115,11 @@ export async function updateContactInfo(input: Partial<ContactInfo>): Promise<vo
     .collection(DOC_PATH.collection)
     .doc(DOC_PATH.doc)
     .set({ contact: input }, { merge: true });
+}
+
+export async function updateCommunicationSettings(input: Partial<CommunicationSettings>): Promise<void> {
+  await adminDb
+    .collection(DOC_PATH.collection)
+    .doc(DOC_PATH.doc)
+    .set({ communication: input }, { merge: true });
 }

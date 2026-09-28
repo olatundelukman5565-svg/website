@@ -65,13 +65,25 @@ export function ProjectForm({
             <option value="" disabled>
               Select a category
             </option>
-            {categories.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.parentId ? "— " : ""}
-                {c.name}
-              </option>
-            ))}
+            {categories
+              .filter((c) => !c.parentId)
+              .map((pillar) => {
+                const subcategories = categories.filter((c) => c.parentId === pillar.id);
+                if (subcategories.length === 0) return null;
+                return (
+                  <optgroup key={pillar.id} label={pillar.name}>
+                    {subcategories.map((c) => (
+                      <option key={c.id} value={c.id}>
+                        {c.name}
+                      </option>
+                    ))}
+                  </optgroup>
+                );
+              })}
           </select>
+          <p className="mt-1 text-xs text-stone-400">
+            Projects always belong to a subcategory (e.g. 2D → Technical Drawing), never to a pillar directly.
+          </p>
         </div>
 
         <div>

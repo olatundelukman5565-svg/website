@@ -24,6 +24,7 @@ export interface Category {
   capabilities: string[];
   parentId?: string | null;
   order: number;
+  enabled: boolean;
   coverImageUrl?: string | null;
   createdAt: string;
   updatedAt: string;
@@ -87,8 +88,54 @@ export interface ContactInfo {
   social: { label: string; url: string }[];
 }
 
+export interface CommunicationSettings {
+  whatsappNumber: string;
+  chatEnabled: boolean;
+  welcomeMessage: string;
+  popupEnabled: boolean;
+}
+
 export interface SiteContent {
   homepage: HomepageContent;
   about: AboutContent;
   contact: ContactInfo;
+  communication: CommunicationSettings;
+}
+
+export type ChatSenderRole = "buyer" | "admin";
+
+export type ChatAttachmentKind = "image" | "pdf" | "video" | "file";
+
+export interface ChatAttachment {
+  url: string;
+  path: string;
+  name: string;
+  size: number;
+  contentType: string;
+  kind: ChatAttachmentKind;
+  resourceType: "image" | "video" | "raw";
+}
+
+export interface ChatMessage {
+  id: string;
+  conversationId: string;
+  senderRole: ChatSenderRole;
+  text: string;
+  attachments: ChatAttachment[];
+  createdAt: string;
+}
+
+export interface ChatConversation {
+  id: string;
+  buyerName: string;
+  buyerEmail: string;
+  lastMessage: string;
+  lastMessageAt: string;
+  lastSenderRole: ChatSenderRole;
+  lastMessageHasAttachments: boolean;
+  unreadByAdmin: number;
+  unreadByBuyer: number;
+  archived: boolean;
+  createdAt: string;
+  updatedAt: string;
 }

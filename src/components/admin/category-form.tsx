@@ -111,6 +111,19 @@ export function CategoryForm({
         </div>
       </div>
 
+      <div className="flex items-center gap-2">
+        <input
+          id="enabled"
+          name="enabled"
+          type="checkbox"
+          defaultChecked={category?.enabled ?? true}
+          className="h-4 w-4 rounded border-stone-300 text-amber-500 focus:ring-amber-500"
+        />
+        <label htmlFor="enabled" className="text-sm font-medium text-stone-700">
+          Visible on the website
+        </label>
+      </div>
+
       {state.error && (
         <p role="alert" className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">
           {state.error}
