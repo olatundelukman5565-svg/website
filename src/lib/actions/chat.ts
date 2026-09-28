@@ -12,6 +12,7 @@ import {
   markReadByBuyer,
 } from "@/lib/data/chat";
 import { getSiteContent } from "@/lib/data/site-content";
+import { notifyAdminsOfNewMessage } from "@/lib/notify-admins";
 import { uploadChatAttachment } from "@/lib/upload";
 import { isRealFile, validateChatAttachment, MAX_CHAT_ATTACHMENTS_PER_MESSAGE, MAX_CHAT_MESSAGE_LENGTH } from "@/lib/validation";
 import { CHAT_TOKEN_COOKIE } from "@/lib/chat-cookie-name";
@@ -155,6 +156,16 @@ export async function sendBuyerMessage(
   }
 
   await addMessage(conversationId, { senderRole: "buyer", text, attachments });
+
+  const conversation = await getConversationById(conversationId);
+  if (conversation) {
+    await notifyAdminsOfNewMessage({
+      title: `New message from ${conversation.buyerName}`,
+      body: text || (attachments.length > 0 ? "Sent an attachment" : ""),
+      link: "/admin/chat",
+    });
+  }
+
   return {};
 }
 
